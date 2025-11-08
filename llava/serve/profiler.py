@@ -63,10 +63,6 @@ def set_visual_tokens(model, visual_token_num: int):
             vt.cdpruner.keep_ratio = visual_token_num  # if you’re using ratio instead of count
         else:
             print("didnt set visual tokens, no num_keep_tokens or keep_ratio attribute")
-    if hasattr(model.config, "visual_token_num"):
-        model.config.visual_token_num = visual_token_num
-    else:
-        print("didnt set visual tokens, no visual_token_num in model.config")
 
 
 
