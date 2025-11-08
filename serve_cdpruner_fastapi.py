@@ -117,6 +117,7 @@ def decide_control(metrics: QueueMetrics):
         print("SLO already violated, picking fastest bucket")
         chosen_bucket_id = bucket_ids[0]
     else:
+        # slack, buckets
         print(f"Slack ms: {slack_ms:.2f}")
         feasible = [
             bid for bid in bucket_ids
@@ -383,4 +384,18 @@ if __name__ == "__main__":
 '''
 PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python \
 uvicorn serve_cdpruner_fastapi:app --host 0.0.0.0 --port 8000
+'''
+
+'''
+to do:
+- verify that the logic is correct
+- why do we have only one dot in the pareto frontier
+- why is there no difference in accuracy when varying vtn
+- effect of vtn is not showing up?: issues can be ttft vs e2e / vtn being ignored / ???
+
+to do:
+- trace: we need to overload the server / have patterns that will cause a change in buckets
+- experiments: measure accuracy of the server once its dynamically varying pruning ratio.
+- look at better algo
+- sglang
 '''

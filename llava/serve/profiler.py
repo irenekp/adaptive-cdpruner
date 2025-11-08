@@ -54,7 +54,7 @@ def normalize_answer(s: str) -> str:
     return s.strip().lower()
 
 
-def set_visual_tokens(model, visual_token_num: int):
+def set_visual_tokens(model, visual_token_num: int):    # wrong???
     """
     Adjust the pruning behavior for CDPruner towers.
     """
@@ -293,6 +293,7 @@ def pareto_filter(profile_rows: List[Dict[str, Any]], accuracy: Dict[int, float]
     Keep only (visual_token_num, batch_size) points that are Pareto-optimal
     w.r.t. (latency_ms, accuracy).
     """
+    # review
     enriched = []
     for row in profile_rows:
         vtn = row["visual_token_num"]
@@ -321,7 +322,7 @@ def pareto_filter(profile_rows: List[Dict[str, Any]], accuracy: Dict[int, float]
 def build_latency_buckets(
     pareto_rows: List[Dict[str, Any]],
     bucket_width_ms: float,
-) -> Dict[int, Dict[str, Any]]:
+) -> Dict[int, Dict[str, Any]]: # review
     """
     Returns:
       buckets[bucket_id] = {
