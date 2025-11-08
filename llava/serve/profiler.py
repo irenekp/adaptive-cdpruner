@@ -1,0 +1,425 @@
+#!/usr/bin/env python
+import json
+import time
+from dataclasses import dataclass
+from typing import List, Dict, Any, Tuple, Optional
+
+import torch
+from PIL import Image
+
+from llava.mm_utils import tokenizer_image_token, process_images
+from llava.constants import (
+    IMAGE_TOKEN_INDEX,
+    DEFAULT_IMAGE_TOKEN,
+    DEFAULT_IM_START_TOKEN,
+    DEFAULT_IM_END_TOKEN,
+    IMAGE_PLACEHOLDER,
+)
+from llava.conversation import conv_templates
+
+
+@dataclass
+class TraceRecord:
+    image_path: str
+    question: str
+    gt_answer: str
+    max_new_tokens: int
+
+
+def load_trace(trace_path: str, max_samples: Optional[int] = None) -> List[TraceRecord]:
+    records: List[TraceRecord] = []
+    with open(trace_path, "r") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            d = json.loads(line)
+            rec = TraceRecord(
+                image_path=d["image_path"],
+                question=d["question"],
+                gt_answer=d.get("gt_answer", "").strip(),
+                max_new_tokens=int(d.get("max_new_tokens", 32)),
+            )
+            records.append(rec)
+            if max_samples is not None and len(records) >= max_samples:
+                break
+    return records
+
+
+def normalize_answer(s: str) -> str:
+    return s.strip().lower()
+
+
+def set_visual_tokens(model, visual_token_num: int):
+    """
+    Adjust the pruning behavior for CDPruner towers.
+    """
+    vt = model.get_vision_tower()
+    if hasattr(vt, "cdpruner"):
+        # directly set num_keep_tokens or ratio if available
+        if hasattr(vt.cdpruner, "num_keep_tokens"):
+            vt.cdpruner.num_keep_tokens = visual_token_num
+        elif hasattr(vt.cdpruner, "keep_ratio"):
+            vt.cdpruner.keep_ratio = visual_token_num  # if you’re using ratio instead of count
+        else:
+            print("didnt set visual tokens, no num_keep_tokens or keep_ratio attribute")
+    if hasattr(model.config, "visual_token_num"):
+        model.config.visual_token_num = visual_token_num
+    else:
+        print("didnt set visual tokens, no visual_token_num in model.config")
+
+
+
+def build_prompts_and_questions_for_records(
+    records: List[TraceRecord],
+    model,
+    tokenizer,
+    conv_mode: str,
+) -> Tuple[List[str], List[str]]:
+    image_token_se = DEFAULT_IM_START_TOKEN + DEFAULT_IMAGE_TOKEN + DEFAULT_IM_END_TOKEN
+    questions: List[str] = []
+    prompts: List[str] = []
+
+    for rec in records:
+        raw_q = rec.question
+        qs = raw_q
+
+        if IMAGE_PLACEHOLDER in qs:
+            if model.config.mm_use_im_start_end:
+                qs = qs.replace(IMAGE_PLACEHOLDER, image_token_se)
+            else:
+                qs = qs.replace(IMAGE_PLACEHOLDER, DEFAULT_IMAGE_TOKEN)
+        else:
+            if model.config.mm_use_im_start_end:
+                qs = image_token_se + "\n" + qs
+            else:
+                qs = DEFAULT_IMAGE_TOKEN + "\n" + qs
+
+        conv = conv_templates[conv_mode].copy()
+        conv.append_message(conv.roles[0], qs)
+        conv.append_message(conv.roles[1], None)
+        prompt = conv.get_prompt()
+
+        questions.append(raw_q)
+        prompts.append(prompt)
+
+    return questions, prompts
+
+
+def tokenize_prompts(
+    prompts: List[str],
+    tokenizer,
+    device: torch.device,
+) -> torch.Tensor:
+    id_lists = [
+        tokenizer_image_token(p, tokenizer, IMAGE_TOKEN_INDEX, return_tensors=None)
+        for p in prompts
+    ]
+    max_len = max(len(ids) for ids in id_lists)
+    pad_id = tokenizer.pad_token_id or tokenizer.eos_token_id
+
+    input_ids = torch.full(
+        (len(prompts), max_len),
+        pad_id,
+        dtype=torch.long,
+        device=device,
+    )
+    for i, ids in enumerate(id_lists):
+        ids_tensor = torch.tensor(ids, dtype=torch.long, device=device)
+        input_ids[i, : len(ids)] = ids_tensor
+
+    return input_ids
+
+
+def load_and_process_images_for_records(
+    records: List[TraceRecord],
+    image_processor,
+    model,
+    device: torch.device,
+):
+    images: List[Image.Image] = []
+    image_sizes: List[Tuple[int, int]] = []
+    for rec in records:
+        img = Image.open(rec.image_path).convert("RGB")
+        images.append(img)
+        image_sizes.append(img.size)
+
+    image_tensors: List[torch.Tensor] = []
+    for img in images:
+        t = process_images([img], image_processor, model.config)
+        t = t.to(device=device, dtype=torch.float16)
+        image_tensors.append(t)
+
+    return image_tensors, image_sizes
+
+
+def run_accuracy_profile(
+    model,
+    tokenizer,
+    image_processor,
+    device: torch.device,
+    conv_mode: str,
+    records: List[TraceRecord],
+    visual_token_nums: List[int],
+) -> Dict[int, float]:
+    """
+    Returns: accuracy_per_vtn[visual_token_num] = accuracy float
+    """
+    accuracy: Dict[int, float] = {}
+    model.eval()
+
+    for vtn in visual_token_nums:
+        set_visual_tokens(model, vtn)
+        correct = 0
+        total = 0
+
+        for rec in records:
+            batch_records = [rec]
+            questions, prompts = build_prompts_and_questions_for_records(
+                batch_records, model, tokenizer, conv_mode
+            )
+            input_ids = tokenize_prompts(prompts, tokenizer, device)
+            image_tensors, image_sizes = load_and_process_images_for_records(
+                batch_records, image_processor, model, device
+            )
+
+            with torch.inference_mode():
+                out = model.generate(
+                    input_ids,
+                    images=image_tensors,
+                    image_sizes=image_sizes,
+                    texts=questions,
+                    max_new_tokens=rec.max_new_tokens,
+                    do_sample=False,
+                )
+
+            if isinstance(out, tuple):
+                output_ids = out[0]
+            else:
+                output_ids = out
+
+            gen_text = tokenizer.decode(
+                output_ids[0],
+                skip_special_tokens=True,
+                clean_up_tokenization_spaces=True,
+            )
+            pred = normalize_answer(gen_text)
+            gold = normalize_answer(rec.gt_answer)
+
+            if gold and gold in pred:
+                correct += 1
+            total += 1
+
+        accuracy[vtn] = correct / total if total > 0 else 0.0
+
+    return accuracy
+
+
+def run_latency_profile(
+    model,
+    tokenizer,
+    image_processor,
+    device: torch.device,
+    conv_mode: str,
+    records: List[TraceRecord],
+    visual_token_nums: List[int],
+    batch_sizes: List[int],
+    batches_per_setting: int = 3,
+) -> List[Dict[str, Any]]:
+    """
+    Returns: profile_rows: list of dicts with (visual_token_num, batch_size, latency_ms, throughput_qps)
+    """
+    profile_rows: List[Dict[str, Any]] = []
+    model.eval()
+
+    # simple cycling over records to form batches
+    N = len(records)
+
+    for vtn in visual_token_nums:
+        set_visual_tokens(model, vtn)
+        for B in batch_sizes:
+            latencies_ms: List[float] = []
+            if B > N:
+                # if batch size > dataset, just skip or clip
+                continue
+
+            for b in range(batches_per_setting):
+                start_idx = (b * B) % (N - B + 1)
+                batch_records = records[start_idx : start_idx + B]
+
+                questions, prompts = build_prompts_and_questions_for_records(
+                    batch_records, model, tokenizer, conv_mode
+                )
+                input_ids = tokenize_prompts(prompts, tokenizer, device)
+                image_tensors, image_sizes = load_and_process_images_for_records(
+                    batch_records, image_processor, model, device
+                )
+
+                max_new_tokens = max(rec.max_new_tokens for rec in batch_records)
+
+                t0 = time.time()
+                with torch.inference_mode():
+                    _ = model.generate(
+                        input_ids,
+                        images=image_tensors,
+                        image_sizes=image_sizes,
+                        texts=questions,
+                        max_new_tokens=max_new_tokens,
+                        do_sample=False,
+                    )
+                t1 = time.time()
+                latencies_ms.append((t1 - t0) * 1000.0)
+
+            if not latencies_ms:
+                continue
+
+            avg_latency_ms = sum(latencies_ms) / len(latencies_ms)
+            throughput_qps = (1000.0 * B) / avg_latency_ms if avg_latency_ms > 0 else 0.0
+
+            profile_rows.append(
+                {
+                    "visual_token_num": vtn,
+                    "batch_size": B,
+                    "latency_ms": avg_latency_ms,
+                    "throughput_qps": throughput_qps,
+                }
+            )
+
+    return profile_rows
+
+
+def pareto_filter(profile_rows: List[Dict[str, Any]], accuracy: Dict[int, float]) -> List[Dict[str, Any]]:
+    """
+    Keep only (visual_token_num, batch_size) points that are Pareto-optimal
+    w.r.t. (latency_ms, accuracy).
+    """
+    enriched = []
+    for row in profile_rows:
+        vtn = row["visual_token_num"]
+        row_acc = accuracy.get(vtn, 0.0)
+        enriched.append({**row, "accuracy": row_acc})
+
+    pareto: List[Dict[str, Any]] = []
+    for i, r in enumerate(enriched):
+        dominated = False
+        for j, s in enumerate(enriched):
+            if i == j:
+                continue
+            if (
+                s["latency_ms"] <= r["latency_ms"]
+                and s["accuracy"] >= r["accuracy"]
+                and (s["latency_ms"] < r["latency_ms"] or s["accuracy"] > r["accuracy"])
+            ):
+                dominated = True
+                break
+        if not dominated:
+            pareto.append(r)
+
+    return pareto
+
+
+def build_latency_buckets(
+    pareto_rows: List[Dict[str, Any]],
+    bucket_width_ms: float,
+) -> Dict[int, Dict[str, Any]]:
+    """
+    Returns:
+      buckets[bucket_id] = {
+        "latency_min": ...,
+        "latency_max": ...,
+        "choices": [rows...],
+        "max_accuracy_choice": row,
+        "max_batch_choice": row,
+      }
+    """
+    buckets: Dict[int, Dict[str, Any]] = {}
+
+    for row in pareto_rows:
+        latency = row["latency_ms"]
+        bucket_id = int(latency // bucket_width_ms)
+        b = buckets.setdefault(
+            bucket_id,
+            {
+                "latency_min": bucket_id * bucket_width_ms,
+                "latency_max": (bucket_id + 1) * bucket_width_ms,
+                "choices": [],
+                "max_accuracy_choice": None,
+                "max_batch_choice": None,
+            },
+        )
+        b["choices"].append(row)
+
+    # compute best per bucket
+    for bucket_id, b in buckets.items():
+        choices = b["choices"]
+        if not choices:
+            continue
+        max_acc = max(choices, key=lambda r: r["accuracy"])
+        max_bs = max(choices, key=lambda r: r["batch_size"])
+        b["max_accuracy_choice"] = max_acc
+        b["max_batch_choice"] = max_bs
+
+    return buckets
+
+
+def run_profiler(
+    model,
+    tokenizer,
+    image_processor,
+    device: torch.device,
+    conv_mode: str,
+    trace_path: str,
+    visual_token_nums: List[int],
+    batch_sizes: List[int],
+    max_accuracy_samples: int = 200,
+    max_latency_samples: int = 200,
+    latency_bucket_width_ms: float = 10.0,
+) -> Dict[str, Any]:
+    """
+    High-level entrypoint. Returns:
+      {
+        "profile_rows": [...],
+        "pareto_rows": [...],
+        "buckets": {...},
+        "visual_token_nums": [...],
+        "batch_sizes": [...],
+        "latency_bucket_width_ms": float,
+      }
+    """
+    # Load samples (shared for accuracy + latency)
+    acc_records = load_trace(trace_path, max_samples=max_accuracy_samples)
+    lat_records = load_trace(trace_path, max_samples=max_latency_samples)
+
+    accuracy = run_accuracy_profile(
+        model=model,
+        tokenizer=tokenizer,
+        image_processor=image_processor,
+        device=device,
+        conv_mode=conv_mode,
+        records=acc_records,
+        visual_token_nums=visual_token_nums,
+    )
+
+    profile_rows = run_latency_profile(
+        model=model,
+        tokenizer=tokenizer,
+        image_processor=image_processor,
+        device=device,
+        conv_mode=conv_mode,
+        records=lat_records,
+        visual_token_nums=visual_token_nums,
+        batch_sizes=batch_sizes,
+        batches_per_setting=3,
+    )
+
+    pareto_rows = pareto_filter(profile_rows, accuracy)
+    buckets = build_latency_buckets(pareto_rows, bucket_width_ms=latency_bucket_width_ms)
+
+    return {
+        "profile_rows": profile_rows,
+        "pareto_rows": pareto_rows,
+        "buckets": buckets,
+        "visual_token_nums": visual_token_nums,
+        "batch_sizes": batch_sizes,
+        "latency_bucket_width_ms": latency_bucket_width_ms,
+    }

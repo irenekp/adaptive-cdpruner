@@ -9,6 +9,11 @@ from uuid import uuid4
 import torch
 from fastapi import FastAPI
 from pydantic import BaseModel
+import os
+from llava.serve.profiler import run_profiler, set_visual_tokens
+SCHEDULER_PROFILE = None  # filled at startup
+# Fixed SLO for all requests (ms)
+REQUEST_SLO_MS = float(os.getenv("CDPRUNER_REQUEST_SLO_MS", "300"))
 
 from llava.utils import disable_torch_init
 from llava.mm_utils import (
@@ -85,20 +90,63 @@ def compute_queue_metrics(queue: Deque[QueueItem]) -> QueueMetrics:
     )
 
 
-def decide_batch_size(metrics: QueueMetrics) -> int:
+def decide_control(metrics: QueueMetrics):
     """
-    Batch size decision unit.
+    SuperServe-style control:
+      - compute slack based on fixed SLO and oldest_wait,
+      - pick a latency bucket whose latency_max <= slack,
+      - choose (visual_token_num, batch_size) from that bucket.
 
-    For now: simple placeholder policy:
-      - If queue is empty: 0
-      - Else: min(queue_length, MAX_BATCH_SIZE)
-
-    Later: you plug in SlackFit/Superserve-like logic here,
-    using metrics.queue_length, metrics.avg_wait, metrics.oldest_wait, etc.
+    Returns:
+      (visual_token_num, batch_size), or (None, 0) if no batching should happen.
     """
     if metrics.queue_length == 0:
-        return 0
-    return min(metrics.queue_length, MAX_BATCH_SIZE)
+        return None, 0
+
+    global SCHEDULER_PROFILE
+    if SCHEDULER_PROFILE is None or not SCHEDULER_PROFILE.get("buckets"):
+        requested = min(metrics.queue_length, MAX_BATCH_SIZE)
+        return None, requested
+
+    buckets = SCHEDULER_PROFILE["buckets"]
+    bucket_ids = sorted(int(bid) for bid in buckets.keys())
+
+    slack_ms = REQUEST_SLO_MS - metrics.oldest_wait * 1000.0
+
+    if slack_ms <= 0:
+        print("SLO already violated, picking fastest bucket")
+        chosen_bucket_id = bucket_ids[0]
+    else:
+        print(f"Slack ms: {slack_ms:.2f}")
+        feasible = [
+            bid for bid in bucket_ids
+            if buckets[str(bid)]["latency_max"] <= slack_ms
+        ]
+        if feasible:
+            chosen_bucket_id = max(feasible)
+            print(f"Chosen bucket id: {chosen_bucket_id}")
+        else:
+            print("No feasible bucket, picking fastest bucket")
+            chosen_bucket_id = bucket_ids[0]
+            print(f"Chosen bucket id: {chosen_bucket_id}")
+
+    bucket = buckets[str(chosen_bucket_id)]
+    choice = (
+        bucket.get("max_batch_choice")
+        or bucket.get("max_accuracy_choice")
+        or (bucket["choices"][0] if bucket["choices"] else None)
+    )
+    if choice is None:
+        return None, 0
+
+    vtn = choice["visual_token_num"]
+    B = choice["batch_size"]
+
+    B = min(B, metrics.queue_length, MAX_BATCH_SIZE)
+    if B <= 0:
+        return None, 0
+
+    return vtn, B
 
 def build_prompts_and_questions(
     requests: List[QueueItem],
@@ -203,13 +251,11 @@ def batched_generate(requests: List[QueueItem]) -> List[str]:
             image_sizes=image_sizes,
             texts=questions,
             do_sample=False,
-            temperature=0.0,
             max_new_tokens=64,
         )
 
-    # Handle (output_ids, visual_token_num) or plain output_ids
     if isinstance(out, tuple):
-        output_ids, _ = out
+        output_ids = out[0]
     else:
         output_ids = out
 
@@ -230,15 +276,17 @@ async def controller_loop():
                 await condition.wait()
 
             metrics = compute_queue_metrics(pending)
-            batch_size = decide_batch_size(metrics)
+            vtn, batch_size = decide_control(metrics)
             if batch_size <= 0:
                 continue
-
-            batch_size = min(batch_size, len(pending))
 
             batch_items: List[QueueItem] = [
                 pending.popleft() for _ in range(batch_size)
             ]
+
+        # Apply pruning level (if any) just before running the batch
+        if vtn is not None:
+            set_visual_tokens(model, vtn)
 
         try:
             outputs = await asyncio.to_thread(batched_generate, batch_items)
@@ -248,7 +296,6 @@ async def controller_loop():
                     item.future.set_exception(e)
             continue
 
-        # Map outputs back to futures
         for item, out_text in zip(batch_items, outputs):
             if not item.future.done():
                 item.future.set_result(
@@ -280,9 +327,31 @@ async def startup_event():
     else:
         conv_mode = "llava_v1"
 
-    # Start controller loop
-    asyncio.create_task(controller_loop())
+    global SCHEDULER_PROFILE
 
+    trace_path = os.getenv("CDPRUNER_PROFILE_TRACE", "traces/sample_trace.jsonl")
+
+    visual_token_nums = [576, 384, 256, 128, 64]
+    batch_sizes = [1, 2, 4, 8]
+
+    print(f"[Profiler] Running offline profile from trace: {trace_path}")
+    SCHEDULER_PROFILE = run_profiler(
+        model=model,
+        tokenizer=tokenizer,
+        image_processor=image_processor,
+        device=device,
+        conv_mode=conv_mode,
+        trace_path=trace_path,
+        visual_token_nums=visual_token_nums,
+        batch_sizes=batch_sizes,
+        max_accuracy_samples=200,
+        max_latency_samples=200,
+        latency_bucket_width_ms=10.0,
+    )
+    print(f"[Profiler] Done. {len(SCHEDULER_PROFILE['profile_rows'])} rows, "
+          f"{len(SCHEDULER_PROFILE['buckets'])} buckets.")
+    print(SCHEDULER_PROFILE)
+    asyncio.create_task(controller_loop())
 
 @app.post("/generate", response_model=GenerateResponse)
 async def generate_endpoint(req: GenerateRequest):

@@ -78,7 +78,12 @@ class CLIPVisionTower(nn.Module):
             
             if texts is not None:
                 with torch.cuda.stream(text_stream):
-                    text_inputs = self.text_tokenizer(text=texts, return_tensors="pt")
+                    text_inputs = self.text_tokenizer(
+                        text=texts,
+                        return_tensors="pt",
+                        padding=True,
+                        truncation=True,
+                    )
                     text_segment = (text_inputs.input_ids.shape[1] - 1) // self.max_position_embeddings + 1
                     text_padding = self.max_position_embeddings * text_segment - text_inputs.input_ids.shape[1]
                     text_inputs = {
