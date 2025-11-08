@@ -16,6 +16,10 @@ from llava.constants import (
     IMAGE_PLACEHOLDER,
 )
 from llava.conversation import conv_templates
+import os
+import matplotlib
+matplotlib.use("Agg")  # non-interactive backend for servers
+import matplotlib.pyplot as plt
 
 
 @dataclass
@@ -357,6 +361,89 @@ def build_latency_buckets(
 
     return buckets
 
+def save_profiler_plots(profile: Dict[str, Any], out_dir: str = "profiler_plots") -> None:
+    """
+    Save:
+      1) Latency vs batch size (per visual_token_num)
+      2) Throughput vs batch size (per visual_token_num)
+      3) Latency vs accuracy (Pareto frontier)
+    to PNG files under `out_dir`.
+    """
+    os.makedirs(out_dir, exist_ok=True)
+
+    rows = profile.get("profile_rows", [])
+    pareto_rows = profile.get("pareto_rows", [])
+
+    if not rows:
+        return
+
+    # --- common helpers ---
+    vtn_values = sorted({r["visual_token_num"] for r in rows})
+    # Build mapping (vtn, B) -> row for quick lookup
+    row_map = {(r["visual_token_num"], r["batch_size"]): r for r in rows}
+
+    # ----------------------------------------------------
+    # 1) Latency vs batch size (one curve per vtn)
+    # ----------------------------------------------------
+    fig, ax = plt.subplots()
+    for vtn in vtn_values:
+        bs = sorted({r["batch_size"] for r in rows if r["visual_token_num"] == vtn})
+        lat = [row_map[(vtn, b)]["latency_ms"] for b in bs]
+        ax.plot(bs, lat, marker="o", label=f"vtn={vtn}")
+    ax.set_xlabel("Batch size")
+    ax.set_ylabel("Latency (ms)")
+    ax.set_title("Latency vs Batch size (per visual_token_num)")
+    ax.legend()
+    ax.grid(True, linestyle="--", alpha=0.3)
+    fig.tight_layout()
+    fig.savefig(os.path.join(out_dir, "latency_vs_batch.png"))
+    plt.close(fig)
+
+    # ----------------------------------------------------
+    # 2) Throughput vs batch size (one curve per vtn)
+    # ----------------------------------------------------
+    fig, ax = plt.subplots()
+    for vtn in vtn_values:
+        bs = sorted({r["batch_size"] for r in rows if r["visual_token_num"] == vtn})
+        thr = [row_map[(vtn, b)]["throughput_qps"] for b in bs]
+        ax.plot(bs, thr, marker="o", label=f"vtn={vtn}")
+    ax.set_xlabel("Batch size")
+    ax.set_ylabel("Throughput (QPS)")
+    ax.set_title("Throughput vs Batch size (per visual_token_num)")
+    ax.legend()
+    ax.grid(True, linestyle="--", alpha=0.3)
+    fig.tight_layout()
+    fig.savefig(os.path.join(out_dir, "throughput_vs_batch.png"))
+    plt.close(fig)
+
+    # ----------------------------------------------------
+    # 3) Latency vs Accuracy (Pareto frontier only)
+    # ----------------------------------------------------
+    if pareto_rows:
+        fig, ax = plt.subplots()
+        lat = [r["latency_ms"] for r in pareto_rows]
+        acc = [r["accuracy"] for r in pareto_rows]
+        ax.scatter(lat, acc, marker="o")
+
+        # Optional: annotate with (vtn,B)
+        for r in pareto_rows:
+            label = f"vtn={r['visual_token_num']},B={r['batch_size']}"
+            ax.annotate(
+                label,
+                (r["latency_ms"], r["accuracy"]),
+                textcoords="offset points",
+                xytext=(3, 3),
+                fontsize=6,
+            )
+
+        ax.set_xlabel("Latency (ms)")
+        ax.set_ylabel("Accuracy")
+        ax.set_title("Latency vs Accuracy (Pareto frontier)")
+        ax.grid(True, linestyle="--", alpha=0.3)
+        fig.tight_layout()
+        fig.savefig(os.path.join(out_dir, "latency_vs_accuracy_pareto.png"))
+        plt.close(fig)
+
 
 def run_profiler(
     model,
@@ -410,6 +497,21 @@ def run_profiler(
 
     pareto_rows = pareto_filter(profile_rows, accuracy)
     buckets = build_latency_buckets(pareto_rows, bucket_width_ms=latency_bucket_width_ms)
+    profile = {
+        "profile_rows": profile_rows,
+        "pareto_rows": pareto_rows,
+        "buckets": buckets,
+        "visual_token_nums": visual_token_nums,
+        "batch_sizes": batch_sizes,
+        "latency_bucket_width_ms": latency_bucket_width_ms,
+    }
+
+    # Save plots to disk (directory can be overridden via env var)
+    plot_dir = os.getenv("CDPRUNER_PROFILE_PLOTS_DIR", "profiler_plots")
+    try:
+        save_profiler_plots(profile, out_dir=plot_dir)
+    except Exception as e:
+        print(f"[Profiler] Failed to save plots: {e}")
 
     return {
         "profile_rows": profile_rows,
