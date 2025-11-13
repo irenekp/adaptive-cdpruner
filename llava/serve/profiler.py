@@ -20,6 +20,8 @@ import os
 import matplotlib
 matplotlib.use("Agg")  # non-interactive backend for servers
 import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
 
 
 @dataclass
@@ -58,15 +60,10 @@ def set_visual_tokens(model, visual_token_num: int):    # wrong???
     """
     Adjust the pruning behavior for CDPruner towers.
     """
-    vt = model.get_vision_tower()
-    if hasattr(vt, "cdpruner"):
-        # directly set num_keep_tokens or ratio if available
-        if hasattr(vt.cdpruner, "num_keep_tokens"):
-            vt.cdpruner.num_keep_tokens = visual_token_num
-        elif hasattr(vt.cdpruner, "keep_ratio"):
-            vt.cdpruner.keep_ratio = visual_token_num  # if you’re using ratio instead of count
-        else:
-            print("didnt set visual tokens, no num_keep_tokens or keep_ratio attribute")
+    if hasattr(model, "visual_token_num"):
+        model.visual_token_num = visual_token_num
+    else:
+        print("cannot set visual token number")
 
 
 
@@ -247,6 +244,7 @@ def run_latency_profile(
                 start_idx = (b * B) % (N - B + 1)
                 batch_records = records[start_idx : start_idx + B]
 
+                t0 = time.time()
                 questions, prompts = build_prompts_and_questions_for_records(
                     batch_records, model, tokenizer, conv_mode
                 )
@@ -256,8 +254,6 @@ def run_latency_profile(
                 )
 
                 max_new_tokens = max(rec.max_new_tokens for rec in batch_records)
-
-                t0 = time.time()
                 with torch.inference_mode():
                     _ = model.generate(
                         input_ids,
@@ -287,40 +283,8 @@ def run_latency_profile(
 
     return profile_rows
 
-
-def pareto_filter(profile_rows: List[Dict[str, Any]], accuracy: Dict[int, float]) -> List[Dict[str, Any]]:
-    """
-    Keep only (visual_token_num, batch_size) points that are Pareto-optimal
-    w.r.t. (latency_ms, accuracy).
-    """
-    # review
-    enriched = []
-    for row in profile_rows:
-        vtn = row["visual_token_num"]
-        row_acc = accuracy.get(vtn, 0.0)
-        enriched.append({**row, "accuracy": row_acc})
-
-    pareto: List[Dict[str, Any]] = []
-    for i, r in enumerate(enriched):
-        dominated = False
-        for j, s in enumerate(enriched):
-            if i == j:
-                continue
-            if (
-                s["latency_ms"] <= r["latency_ms"]
-                and s["accuracy"] >= r["accuracy"]
-                and (s["latency_ms"] < r["latency_ms"] or s["accuracy"] > r["accuracy"])
-            ):
-                dominated = True
-                break
-        if not dominated:
-            pareto.append(r)
-
-    return pareto
-
-
 def build_latency_buckets(
-    pareto_rows: List[Dict[str, Any]],
+    profile_rows: List[Dict[str, Any]],
     bucket_width_ms: float,
 ) -> Dict[int, Dict[str, Any]]: # review
     """
@@ -335,30 +299,29 @@ def build_latency_buckets(
     """
     buckets: Dict[int, Dict[str, Any]] = {}
 
-    for row in pareto_rows:
-        latency = row["latency_ms"]
-        bucket_id = int(latency // bucket_width_ms)
-        b = buckets.setdefault(
-            bucket_id,
-            {
-                "latency_min": bucket_id * bucket_width_ms,
-                "latency_max": (bucket_id + 1) * bucket_width_ms,
-                "choices": [],
-                "max_accuracy_choice": None,
-                "max_batch_choice": None,
-            },
-        )
-        b["choices"].append(row)
+    if not profile_rows:
+        return buckets
 
-    # compute best per bucket
-    for bucket_id, b in buckets.items():
-        choices = b["choices"]
-        if not choices:
+    min_latency = min(r["latency_ms"] for r in profile_rows)
+    max_latency = max(r["latency_ms"] for r in profile_rows)
+    num_buckets = int((max_latency - min_latency) // bucket_width_ms) + 1
+
+    for i in range(num_buckets):
+        bucket_latency = min_latency + (i + 1) * bucket_width_ms
+        candidates = [r for r in profile_rows if r["latency_ms"] < bucket_latency]
+
+        if not candidates:
             continue
-        max_acc = max(choices, key=lambda r: r["accuracy"])
-        max_bs = max(choices, key=lambda r: r["batch_size"])
-        b["max_accuracy_choice"] = max_acc
-        b["max_batch_choice"] = max_bs
+
+        best_row = max(
+            candidates,
+            key=lambda r: (r["batch_size"], r["accuracy"])
+        )
+
+        buckets[i] = {
+            "latency_ms": bucket_latency,
+            "best_choice": best_row,
+        }
 
     return buckets
 
@@ -373,7 +336,8 @@ def save_profiler_plots(profile: Dict[str, Any], out_dir: str = "profiler_plots"
     os.makedirs(out_dir, exist_ok=True)
 
     rows = profile.get("profile_rows", [])
-    pareto_rows = profile.get("pareto_rows", [])
+    buckets = profile.get("buckets", [])
+    accuracy = profile.get("accuracy", [])
 
     if not rows:
         return
@@ -420,18 +384,18 @@ def save_profiler_plots(profile: Dict[str, Any], out_dir: str = "profiler_plots"
     # ----------------------------------------------------
     # 3) Latency vs Accuracy (Pareto frontier only)
     # ----------------------------------------------------
-    if pareto_rows:
-        fig, ax = plt.subplots()
-        lat = [r["latency_ms"] for r in pareto_rows]
-        acc = [r["accuracy"] for r in pareto_rows]
-        ax.scatter(lat, acc, marker="o")
 
-        # Optional: annotate with (vtn,B)
-        for r in pareto_rows:
-            label = f"vtn={r['visual_token_num']},B={r['batch_size']}"
+    if buckets:
+        fig, ax = plt.subplots()
+        bucket_keys = sorted(buckets.keys())
+        lat = [buckets[key]["latency_ms"] for key in bucket_keys]
+        acc = [buckets[key]["best_choice"]["accuracy"] for key in bucket_keys]
+        ax.scatter(lat, acc, marker="o")
+        for key in bucket_keys:
+            label = f"vtn={buckets[key]['best_choice']['visual_token_num']},B={buckets[key]['best_choice']['batch_size']}"
             ax.annotate(
                 label,
-                (r["latency_ms"], r["accuracy"]),
+                (buckets[key]["latency_ms"], buckets[key]["best_choice"]["accuracy"]),
                 textcoords="offset points",
                 xytext=(3, 3),
                 fontsize=6,
@@ -439,10 +403,60 @@ def save_profiler_plots(profile: Dict[str, Any], out_dir: str = "profiler_plots"
 
         ax.set_xlabel("Latency (ms)")
         ax.set_ylabel("Accuracy")
-        ax.set_title("Latency vs Accuracy (Pareto frontier)")
+        ax.set_title("Accuracy vs Latency (Pareto frontier)")
         ax.grid(True, linestyle="--", alpha=0.3)
         fig.tight_layout()
         fig.savefig(os.path.join(out_dir, "latency_vs_accuracy_pareto.png"))
+        plt.close(fig)
+    
+    # ----------------------------------------------------
+    # 4) Accuracy vs vtn
+    # ----------------------------------------------------
+    fig, ax = plt.subplots()        
+    acc = [accuracy[vtn] for vtn in vtn_values]
+    ax.plot(vtn_values, acc, marker="o")
+    ax.set_xlabel("Visual Token Number")
+    ax.set_ylabel("Accuracy")
+    ax.set_title("Accuracy vs Visual Token Number")
+    ax.legend()
+    ax.grid(True, linestyle="--", alpha=0.3)
+    fig.tight_layout()
+    fig.savefig(os.path.join(out_dir, "accuracy_vs_vtn.png"))
+    plt.close(fig)
+
+    # ----------------------------------------------------
+    # 5) Batch Size vs Accuracy heatmap (cells = Latency ms)
+    # ----------------------------------------------------
+    if rows and accuracy:
+        bs_values = sorted({r["batch_size"] for r in rows})
+        vtn_values = sorted({r["visual_token_num"] for r in rows})
+        acc_values = [accuracy[vtn] for vtn in vtn_values]
+        heatmap_data = np.zeros((len(vtn_values), len(bs_values)))
+
+        for i, vtn in enumerate(vtn_values):
+            for j, b in enumerate(bs_values):
+                row = row_map.get((vtn, b))
+                if row:
+                    heatmap_data[i, j] = row["latency_ms"]
+                else:
+                    heatmap_data[i, j] = np.nan
+
+        fig, ax = plt.subplots(figsize=(8, 6))
+        sns.heatmap(
+            heatmap_data,
+            annot=True,
+            fmt=".1f",
+            xticklabels=bs_values,
+            yticklabels=[f"{a:.3f}" for a in acc_values],
+            cmap="viridis",
+            cbar_kws={"label": "Latency (ms)"},
+            ax=ax,
+        )
+        ax.set_xlabel("Batch size")
+        ax.set_ylabel("Accuracy")
+        ax.set_title("Batch Size vs Accuracy Heatmap (cells = Latency ms)")
+        fig.tight_layout()
+        fig.savefig(os.path.join(out_dir, "batchsize_vs_accuracy_heatmap.png"))
         plt.close(fig)
 
 
@@ -463,7 +477,6 @@ def run_profiler(
     High-level entrypoint. Returns:
       {
         "profile_rows": [...],
-        "pareto_rows": [...],
         "buckets": {...},
         "visual_token_nums": [...],
         "batch_sizes": [...],
@@ -496,11 +509,15 @@ def run_profiler(
         batches_per_setting=3,
     )
 
-    pareto_rows = pareto_filter(profile_rows, accuracy)
-    buckets = build_latency_buckets(pareto_rows, bucket_width_ms=latency_bucket_width_ms)
+    for row in profile_rows:
+        vtn = row["visual_token_num"]
+        row_acc = accuracy.get(vtn, 0.0)
+        row["accuracy"] = row_acc
+
+    buckets = build_latency_buckets(profile_rows, bucket_width_ms=latency_bucket_width_ms)
     profile = {
         "profile_rows": profile_rows,
-        "pareto_rows": pareto_rows,
+        "accuracy": accuracy,
         "buckets": buckets,
         "visual_token_nums": visual_token_nums,
         "batch_sizes": batch_sizes,
@@ -514,11 +531,4 @@ def run_profiler(
     except Exception as e:
         print(f"[Profiler] Failed to save plots: {e}")
 
-    return {
-        "profile_rows": profile_rows,
-        "pareto_rows": pareto_rows,
-        "buckets": buckets,
-        "visual_token_nums": visual_token_nums,
-        "batch_sizes": batch_sizes,
-        "latency_bucket_width_ms": latency_bucket_width_ms,
-    }
+    return profile

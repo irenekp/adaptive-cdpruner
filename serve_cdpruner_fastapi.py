@@ -121,7 +121,7 @@ def decide_control(metrics: QueueMetrics):
         print(f"Slack ms: {slack_ms:.2f}")
         feasible = [
             bid for bid in bucket_ids
-            if buckets.get(str(bid), buckets.get(bid, {})).get("latency_max", float("inf")) <= slack_ms
+            if buckets.get(str(bid), buckets.get(bid, {})).get("latency_ms", float("inf")) <= slack_ms
         ]
         if feasible:
             chosen_bucket_id = max(feasible)
@@ -134,9 +134,7 @@ def decide_control(metrics: QueueMetrics):
     bucket = buckets.get(str(chosen_bucket_id)) or buckets.get(chosen_bucket_id)
 
     choice = (
-        bucket.get("max_batch_choice")
-        or bucket.get("max_accuracy_choice")
-        or (bucket["choices"][0] if bucket["choices"] else None)
+        bucket.get("best_choice")
     )
     if choice is None:
         return None, 0
