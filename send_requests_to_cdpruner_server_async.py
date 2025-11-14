@@ -4,6 +4,7 @@ import json
 import time
 import asyncio
 from typing import List, Dict
+import os
 
 import aiohttp
 
@@ -25,6 +26,7 @@ def load_trace(path: str) -> List[Dict]:
 
 async def send_request(session: aiohttp.ClientSession, base_url: str, idx: int, ev: Dict, t0: float):
     """Wait until arrival_time and then send the request asynchronously."""
+    global slo_violated_count, slo_violated_count_lock
     arrival = ev["arrival_time"]
     target_time = t0 + arrival
     now = time.time()
@@ -81,7 +83,7 @@ async def replay_trace(trace_path: str, server_url: str, max_reqs: int | None = 
 
 
 def main():
-    global violated_count
+    global slo_violated_count
     parser = argparse.ArgumentParser()
     parser.add_argument("--trace-path", type=str, required=True, help="Path to JSONL trace file.")
     parser.add_argument("--server-url", type=str, default="http://0.0.0.0:8000",
@@ -92,7 +94,7 @@ def main():
 
     asyncio.run(replay_trace(args.trace_path, args.server_url, args.max_reqs))
 
-    print(f"\nTotal SLO Violations: {violated_count}")
+    print(f"\nTotal SLO Violations: {slo_violated_count}")
 
 if __name__ == "__main__":
     main()
