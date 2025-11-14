@@ -7,6 +7,10 @@ from typing import List, Dict
 
 import aiohttp
 
+REQUEST_SLO_MS = float(os.getenv("CDPRUNER_REQUEST_SLO_MS", "300"))
+slo_violated_count = 0 
+slo_violated_count_lock = asyncio.Lock() 
+
 def load_trace(path: str) -> List[Dict]:
     events = []
     with open(path, "r") as f:
@@ -45,6 +49,10 @@ async def send_request(session: aiohttp.ClientSession, base_url: str, idx: int, 
     latency_ms = (finish_time - send_time) * 1000.0
     deadline = ev.get("deadline_ms")
 
+    if latency_ms > REQUEST_SLO_MS: # TODO: use REQUEST_SLO_MS or deadline?
+        async with slo_violated_count_lock:
+            slo_violated_count += 1
+
     print(
         f"[{idx}] Q: {ev['question']!r} "
         f"→ answer: {data.get('output', '')[:80]!r} "
@@ -73,6 +81,7 @@ async def replay_trace(trace_path: str, server_url: str, max_reqs: int | None = 
 
 
 def main():
+    global violated_count
     parser = argparse.ArgumentParser()
     parser.add_argument("--trace-path", type=str, required=True, help="Path to JSONL trace file.")
     parser.add_argument("--server-url", type=str, default="http://0.0.0.0:8000",
@@ -83,6 +92,7 @@ def main():
 
     asyncio.run(replay_trace(args.trace_path, args.server_url, args.max_reqs))
 
+    print(f"\nTotal SLO Violations: {violated_count}")
 
 if __name__ == "__main__":
     main()
