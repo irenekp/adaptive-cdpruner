@@ -222,9 +222,10 @@ def run_latency_profile(
     visual_token_nums: List[int],
     batch_sizes: List[int],
     batches_per_setting: int = 3,
+    warmup_iterations: int = 3,
 ) -> List[Dict[str, Any]]:
     """
-    Returns: profile_rows: list of dicts with (visual_token_num, batch_size, latency_ms, throughput_qps)
+    Returns: profile_rows: list of dicts with (visual_token_num, batch_size, latency_ms, latency_stddev_ms, throughput_qps)
     """
     profile_rows: List[Dict[str, Any]] = []
     model.eval()
@@ -240,10 +241,14 @@ def run_latency_profile(
                 # if batch size > dataset, just skip or clip
                 continue
 
-            for b in range(batches_per_setting):
-                start_idx = (b * B) % (N - B + 1)
+            for b in range(warmup_iterations + batches_per_setting):
+                start_idx = (b * B)
+                if start_idx > N - B:
+                    print("Not enough records to form a full batch, skipping...")
+                    continue
                 batch_records = records[start_idx : start_idx + B]
-
+                
+                torch.cuda.synchronize()
                 t0 = time.time()
                 questions, prompts = build_prompts_and_questions_for_records(
                     batch_records, model, tokenizer, conv_mode
@@ -263,13 +268,18 @@ def run_latency_profile(
                         max_new_tokens=max_new_tokens,
                         do_sample=False,
                     )
+
+                torch.cuda.synchronize()
                 t1 = time.time()
-                latencies_ms.append((t1 - t0) * 1000.0)
+                if b >= warmup_iterations:
+                    latencies_ms.append((t1 - t0) * 1000.0)
 
             if not latencies_ms:
                 continue
 
-            avg_latency_ms = sum(latencies_ms) / len(latencies_ms)
+            numpy_latencies_ms = np.array(latencies_ms)
+            avg_latency_ms = np.mean(numpy_latencies_ms)
+            std_dev_latency_ms = np.std(numpy_latencies_ms)
             throughput_qps = (1000.0 * B) / avg_latency_ms if avg_latency_ms > 0 else 0.0
 
             profile_rows.append(
@@ -277,6 +287,7 @@ def run_latency_profile(
                     "visual_token_num": vtn,
                     "batch_size": B,
                     "latency_ms": avg_latency_ms,
+                    "latency_stddev_ms": std_dev_latency_ms,
                     "throughput_qps": throughput_qps,
                 }
             )
@@ -354,7 +365,9 @@ def save_profiler_plots(profile: Dict[str, Any], out_dir: str = "profiler_plots"
     for vtn in vtn_values:
         bs = sorted({r["batch_size"] for r in rows if r["visual_token_num"] == vtn})
         lat = [row_map[(vtn, b)]["latency_ms"] for b in bs]
+        err = [row_map[(vtn, b)]["latency_stddev_ms"] for b in bs]
         ax.plot(bs, lat, marker="o", label=f"vtn={vtn}")
+        ax.errorbar(bs, lat, yerr=err, fmt="none", capsize=4, alpha=0.7)
     ax.set_xlabel("Batch size")
     ax.set_ylabel("Latency (ms)")
     ax.set_title("Latency vs Batch size (per visual_token_num)")
@@ -447,14 +460,14 @@ def save_profiler_plots(profile: Dict[str, Any], out_dir: str = "profiler_plots"
             annot=True,
             fmt=".1f",
             xticklabels=bs_values,
-            yticklabels=[f"{a:.3f}" for a in acc_values],
+            yticklabels=[f"{a:.3f}, {vtn}" for a, vtn in zip(acc_values, vtn_values)],
             cmap="viridis",
             cbar_kws={"label": "Latency (ms)"},
             ax=ax,
         )
         ax.set_xlabel("Batch size")
-        ax.set_ylabel("Accuracy")
-        ax.set_title("Batch Size vs Accuracy Heatmap (cells = Latency ms)")
+        ax.set_ylabel("Accuracy, Visual Token Number")
+        ax.set_title("Accuracy, VTN vs Batch Size")
         fig.tight_layout()
         fig.savefig(os.path.join(out_dir, "batchsize_vs_accuracy_heatmap.png"))
         plt.close(fig)
@@ -470,8 +483,9 @@ def run_profiler(
     visual_token_nums: List[int],
     batch_sizes: List[int],
     max_accuracy_samples: int = 200,
-    max_latency_samples: int = 200,
+    max_latency_batches: int = 100,
     latency_bucket_width_ms: float = 10.0,
+    warmup_iterations: int = 3,
 ) -> Dict[str, Any]:
     """
     High-level entrypoint. Returns:
@@ -485,7 +499,7 @@ def run_profiler(
     """
     # Load samples (shared for accuracy + latency)
     acc_records = load_trace(trace_path, max_samples=max_accuracy_samples)
-    lat_records = load_trace(trace_path, max_samples=max_latency_samples)
+    lat_records = load_trace(trace_path, max_samples=max(batch_sizes)*(max_latency_batches+warmup_iterations))
 
     accuracy = run_accuracy_profile(
         model=model,
@@ -506,7 +520,8 @@ def run_profiler(
         records=lat_records,
         visual_token_nums=visual_token_nums,
         batch_sizes=batch_sizes,
-        batches_per_setting=3,
+        batches_per_setting=max_latency_batches,
+        warmup_iterations=warmup_iterations,
     )
 
     for row in profile_rows:

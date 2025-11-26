@@ -345,8 +345,9 @@ async def startup_event():
         visual_token_nums=visual_token_nums,
         batch_sizes=batch_sizes,
         max_accuracy_samples=200,
-        max_latency_samples=200,
+        max_latency_batches=100,
         latency_bucket_width_ms=10.0,
+        warmup_iterations=3,
     )
     print(f"[Profiler] Done. {len(SCHEDULER_PROFILE['profile_rows'])} rows, "
           f"{len(SCHEDULER_PROFILE['buckets'])} buckets.")
