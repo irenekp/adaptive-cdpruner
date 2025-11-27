@@ -30,6 +30,12 @@ def main():
     ap.add_argument("--tv_lambda1", type=float, default=2500.0)
     ap.add_argument("--tv_lambda2_list", type=float, nargs="*", default=[4800.0, 6800.0, 7800.0])
     ap.add_argument("--tv_accel_list", type=float, nargs="*", default=[250.0, 500.0, 5000.0])
+    ap.add_argument(
+    "--tv_cv2a",
+    type=float,
+    default=8.0,
+    help="Squared CV (CV^2) for time-varying Gamma arrivals, fixed across time (SuperServe uses 8).",
+    )
 
     args = ap.parse_args()
     outdir = args.outdir
@@ -63,10 +69,19 @@ def main():
     # Time-varying
     for lam2 in args.tv_lambda2_list:
         for acc in args.tv_accel_list:
-            out = outdir / f"pope_timevary_l1{int(args.tv_lambda1)}_l2{int(lam2)}_a{int(acc)}.jsonl"
-            cmd = [sys.executable, gen, "--mode", "timevary",
-                   "--lambda1", args.tv_lambda1, "--lambda2", lam2, "--accel", acc,
-                   "--duration", args.duration] + common_args() + ["--out", out]
+            out = outdir / (
+                f"pope_timevary_l1{int(args.tv_lambda1)}"
+                f"_l2{int(lam2)}_a{int(acc)}_cv2a{int(args.tv_cv2a)}.jsonl"
+            )
+            cmd = [
+                sys.executable, gen,
+                "--mode", "timevary",
+                "--lambda1", args.tv_lambda1,
+                "--lambda2", lam2,
+                "--accel", acc,
+                "--cv2a", args.tv_cv2a,
+                "--duration", args.duration,
+            ] + common_args() + ["--out", out]
             run(cmd)
 
 if __name__ == "__main__":

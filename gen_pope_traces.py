@@ -97,7 +97,7 @@ def _load_ann_files(ann_dir: Optional[Path]) -> List[dict]:
                         if line.strip():
                             out.append(json.loads(line))
             except Exception:
-                pass
+                raise RuntimeError(f"Failed to read annotation file: {p}")
     return out
 
 def build_gt_lookup(items: List[PopeItem], ann_dir: Optional[Path]) -> Dict[Tuple[Optional[int], str], str]:
@@ -150,13 +150,6 @@ def gen_gamma_bursty(mean_qps: float, cv2: float, duration: float, rng: random.R
         if t<duration: ts.append(t)
     return ts
 
-def gen_bursty(base_qps: float, variant_qps: float, cv2: float, duration: float, rng: random.Random) -> List[float]:
-    base = gen_constant(base_qps, duration)
-    var  = gen_gamma_bursty(variant_qps, cv2, duration, rng)
-    out = base + var
-    out.sort()
-    return out
-
 def _poisson_knuth(rng: random.Random, mean: float) -> int:
     if mean<=0: return 0
     if mean<20:
@@ -167,27 +160,65 @@ def _poisson_knuth(rng: random.Random, mean: float) -> int:
     # normal approx
     return max(0, int(rng.gauss(mean, math.sqrt(mean)) + 0.5))
 
-def gen_timevary(l1: float, l2: float, accel: float, duration: float, rng: random.Random, dt: float=0.01) -> List[float]:
-    low, high = (l1,l2) if l1<=l2 else (l2,l1)
-    t=0.0
+def gen_timevary(
+    l1: float,
+    l2: float,
+    accel: float,
+    duration: float,
+    rng: random.Random,
+    cv2a: float,
+) -> List[float]:
+    """
+    Time-varying Gamma arrival process with *fixed* CV^2 = cv2a.
+
+    At time t, we define:
+      lambda(t) = clamp(l1 + accel * t, [min(l1,l2), max(l1,l2)])
+      mu(t)     = 1 / lambda(t)
+      k         = 1 / cv2a
+      theta(t)  = mu(t) / k
+
+    Then we sample inter-arrival times:
+      T ~ Gamma(k, theta(t))
+    """
+    low, high = (l1, l2) if l1 <= l2 else (l2, l1)
+    t = 0.0
     ts: List[float] = []
-    while t<duration:
-        lam = l1 + accel*t
+    k = 1.0 / max(cv2a, 1e-9)
+
+    while t < duration:
+        lam = l1 + accel * t
         lam = min(max(lam, low), high)
-        expected = max(lam,0.0)*dt
-        k = _poisson_knuth(rng, expected)
-        for _ in range(k):
-            ts.append(t + rng.random()*dt)
-        t += dt
+        if lam <= 0.0:
+            break
+
+        mu = 1.0 / lam          # mean inter-arrival
+        theta = mu / k          # scale
+
+        ia = rng.gammavariate(k, theta)
+        t += ia
+        if t < duration:
+            ts.append(t)
+
+    return ts
+
+def gen_bursty(
+    base_qps: float,
+    variant_qps: float,
+    cv2: float,
+    duration: float,
+    rng: random.Random,
+) -> List[float]:
+    """Base+variant bursty process: deterministic base + Gamma variant."""
+    base = gen_constant(base_qps, duration) if base_qps > 0 else []
+    var  = gen_gamma_bursty(variant_qps, cv2, duration, rng) if variant_qps > 0 else []
+    ts = base + var
     ts.sort()
     return ts
 
-# ---------------- Assemble rows ----------------
 
 def write_trace(out_path: Path, arrivals: List[float], items: List[PopeItem], 
                 max_new_tokens: int, deadline_ms: int, pruning_ratio: Optional[float],
                 gt_lookup: Dict[Tuple[Optional[int], str], str]) -> int:
-    def norm(q: str)->str: return " ".join(q.lower().strip().split())
     out_path.parent.mkdir(parents=True, exist_ok=True)
     n=0
     with out_path.open("w", encoding="utf-8") as f:
@@ -210,52 +241,142 @@ def write_trace(out_path: Path, arrivals: List[float], items: List[PopeItem],
             n += 1
     return n
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--mode", choices=["constant","bursty","timevary"], required=True)
-    ap.add_argument("--duration", type=float, required=True, help="seconds")
-    ap.add_argument("--seed", type=int, default=123)
-    ap.add_argument("--out", type=Path, required=True)
-    ap.add_argument("--pope_jsonl", type=Path, required=True)
-    ap.add_argument("--images_root", type=Path, required=True)
-    ap.add_argument("--ann_dir", type=Path, default=None)
-    ap.add_argument("--max_new_tokens", type=int, default=32)
-    ap.add_argument("--deadline_ms", type=int, default=300)
-    ap.add_argument("--pruning_ratio", type=float, default=None)
+import argparse
+from pathlib import Path
 
-    # constant
-    ap.add_argument("--qps", type=float)
+def parse_args():
+    p = argparse.ArgumentParser()
+    p.add_argument(
+        "--mode",
+        required=True,
+        choices=["constant", "gamma-bursty", "bursty", "timevary"],
+        help="Arrival process type",
+    )
+    p.add_argument(
+        "--duration",
+        type=float,
+        required=True,
+        help="Trace duration in seconds",
+    )
+    p.add_argument(
+        "--seed",
+        type=int,
+        default=0,
+        help="RNG seed",
+    )
+    p.add_argument(
+        "--out",
+        required=True,
+        help="Output JSONL path",
+    )
 
-    # bursty
-    ap.add_argument("--base_qps", type=float)
-    ap.add_argument("--variant_qps", type=float)
-    ap.add_argument("--cv2", type=float)
+    # existing arrival-process args...
+    p.add_argument("--qps", type=float, help="Mean QPS for constant/timevary")
+    p.add_argument("--cv2", type=float, help="CV^2 for gamma-bursty/bursty")
+    p.add_argument("--base_qps", type=float, help="Base QPS for bursty/timevary")
+    p.add_argument("--variant_qps", type=float, help="Variant QPS for bursty")
+    p.add_argument("--lambda1", type=float, help="Initial QPS for timevary")
+    p.add_argument("--lambda2", type=float, help="Final QPS for timevary")
+    p.add_argument("--accel", type=float, help="Arrival acceleration (qps^2)")
+    p.add_argument("--cv2a", type=float, help="Arrival CV^2 for timevary")
 
-    # timevary
-    ap.add_argument("--lambda1", type=float)
-    ap.add_argument("--lambda2", type=float)
-    ap.add_argument("--accel", type=float)
+    # 🔹 NEW: POPE / VLM bits so your current script invocation works
+    p.add_argument(
+        "--pope_jsonl",
+        type=Path,
+        required=True,
+        help="Path to llava_pope_test.jsonl",
+    )
+    p.add_argument(
+        "--images_root",
+        type=Path,
+        required=True,
+        help="Root directory with COCO val2014 images",
+    )
+    p.add_argument(
+        "--ann_dir",
+        type=Path,
+        required=True,
+        help="COCO annotation directory (for POPE)",
+    )
+    p.add_argument(
+        "--max_new_tokens",
+        type=int,
+        default=32,
+        help="Max new tokens per request (stored as metadata in trace)",
+    )
+    p.add_argument(
+        "--deadline_ms",
+        type=float,
+        default=300.0,
+        help="Per-request SLO in milliseconds (stored as metadata in trace)",
+    )
 
-    args = ap.parse_args()
+    return p.parse_args()
+
+
+def main() -> None:
+    args = parse_args()
     rng = random.Random(args.seed)
 
+    # Load POPE items + GT lookup once per run
     items = load_pope_items(args.pope_jsonl, args.images_root)
     gt_lookup = build_gt_lookup(items, args.ann_dir)
 
-    if args.mode=="constant":
-        if args.qps is None: ap.error("--qps required for mode=constant")
+    # ---------------- Arrival generation ----------------
+    if args.mode == "constant":
+        if args.qps is None:
+            raise SystemExit("--qps is required for mode=constant")
         arrivals = gen_constant(args.qps, args.duration)
-    elif args.mode=="bursty":
-        for nm in ("base_qps","variant_qps","cv2"):
-            if getattr(args, nm) is None: ap.error(f"--{nm} required for mode=bursty")
-        arrivals = gen_bursty(args.base_qps, args.variant_qps, args.cv2, args.duration, rng)
-    else:
-        for nm in ("lambda1","lambda2","accel"):
-            if getattr(args, nm) is None: ap.error(f"--{nm} required for mode=timevary")
-        arrivals = gen_timevary(args.lambda1, args.lambda2, args.accel, args.duration, rng)
 
-    n = write_trace(args.out, arrivals, items, args.max_new_tokens, args.deadline_ms, args.pruning_ratio, gt_lookup)
-    print(f"Wrote {n} rows -> {args.out}")
+    elif args.mode == "gamma-bursty":
+        if args.qps is None:
+            raise SystemExit("--qps is required for mode=gamma-bursty")
+        if args.cv2 is None:
+            raise SystemExit("--cv2 is required for mode=gamma-bursty")
+        arrivals = gen_gamma_bursty(args.qps, args.cv2, args.duration, rng)
+
+    elif args.mode == "bursty":
+        if args.base_qps is None:
+            raise SystemExit("--base_qps is required for mode=bursty")
+        if args.variant_qps is None:
+            raise SystemExit("--variant_qps is required for mode=bursty")
+        if args.cv2 is None:
+            raise SystemExit("--cv2 is required for mode=bursty")
+        arrivals = gen_bursty(
+            args.base_qps,
+            args.variant_qps,
+            args.cv2,
+            args.duration,
+            rng,
+        )
+
+    elif args.mode == "timevary":
+        for nm in ("lambda1", "lambda2", "accel"):
+            if getattr(args, nm) is None:
+                raise SystemExit(f"--{nm} required for mode=timevary")
+        arrivals = gen_timevary(
+            args.lambda1,
+            args.lambda2,
+            args.accel,
+            args.duration,
+            rng,
+            cv2a=args.cv2a,
+        )
+    else:
+        raise SystemExit(f"Unknown mode: {args.mode}")
+
+    out_path = args.out if isinstance(args.out, Path) else Path(args.out)
+    write_trace(
+        out_path=out_path,
+        arrivals=arrivals,
+        items=items,
+        max_new_tokens=args.max_new_tokens,
+        deadline_ms=args.deadline_ms,
+        pruning_ratio=None,          # or args.pruning_ratio if you add one later
+        gt_lookup=gt_lookup,
+    )
+
 
 if __name__ == "__main__":
     main()
