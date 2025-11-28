@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-make_traces.py — batch generator for POPE traces (constant / bursty / time-varying)
+make_traces.py — batch generator for gqa traces (constant / bursty / time-varying)
 """
 from __future__ import annotations
 import argparse, subprocess, sys
@@ -12,9 +12,7 @@ def run(cmd):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--pope_jsonl", type=Path, required=True)
-    ap.add_argument("--images_root", type=Path, required=True)
-    ap.add_argument("--ann_dir", type=Path, required=False, default=None)
+    ap.add_argument("--gqa_jsonl", type=Path, required=True)
     ap.add_argument("--outdir", type=Path, required=True)
     ap.add_argument("--duration", type=float, default=60.0)
     ap.add_argument("--seed", type=int, default=123)
@@ -40,12 +38,10 @@ def main():
     args = ap.parse_args()
     outdir = args.outdir
     outdir.mkdir(parents=True, exist_ok=True)
-    gen = Path(__file__).parent / "gen_pope_traces.py"
+    gen = Path(__file__).parent / "gen_gqa_traces.py"
 
     def common_args():
-        arr = ["--pope_jsonl", args.pope_jsonl, "--images_root", args.images_root]
-        if args.ann_dir is not None:
-            arr += ["--ann_dir", args.ann_dir]
+        arr = ["--gqa_jsonl", args.gqa_jsonl]
         arr += ["--seed", args.seed, "--max_new_tokens", args.max_new_tokens, "--deadline_ms", args.deadline_ms]
         if args.pruning_ratio is not None:
             arr += ["--pruning_ratio", args.pruning_ratio]
@@ -53,14 +49,14 @@ def main():
 
     # Constant
     for qps in args.const_qps:
-        out = outdir / f"pope_constant_qps{int(qps)}.jsonl"
+        out = outdir / f"gqa_constant_qps{int(qps)}.jsonl"
         cmd = [sys.executable, gen, "--mode", "constant", "--qps", qps, "--duration", args.duration] + common_args() + ["--out", out]
         run(cmd)
 
     # Bursty
     for vqps in args.bursty_variants:
         for cv2 in args.bursty_cv2:
-            out = outdir / f"pope_bursty_base{int(args.bursty_base)}_var{int(vqps)}_cv2{int(cv2)}.jsonl"
+            out = outdir / f"gqa_bursty_base{int(args.bursty_base)}_var{int(vqps)}_cv2{int(cv2)}.jsonl"
             cmd = [sys.executable, gen, "--mode", "bursty",
                    "--base_qps", args.bursty_base, "--variant_qps", vqps, "--cv2", cv2,
                    "--duration", args.duration] + common_args() + ["--out", out]
@@ -70,7 +66,7 @@ def main():
     for lam2 in args.tv_lambda2_list:
         for acc in args.tv_accel_list:
             out = outdir / (
-                f"pope_timevary_l1{int(args.tv_lambda1)}"
+                f"gqa_timevary_l1{int(args.tv_lambda1)}"
                 f"_l2{int(lam2)}_a{int(acc)}_cv2a{int(args.tv_cv2a)}.jsonl"
             )
             cmd = [

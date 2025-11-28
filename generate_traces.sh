@@ -17,20 +17,12 @@ fi
 
 export DATA_ROOT="/storage/ice1/5/3/istephen3/playground/data"
 
-Q="$DATA_ROOT/eval/pope/llava_pope_test.jsonl"
-IMG="$DATA_ROOT/eval/pope/val2014/val2014"
-ANN="$DATA_ROOT/eval/pope/answers"
-
-ANS_DIR="$DATA_ROOT/eval/pope/answers"
-
-OUT_DIR="traces/pope_superserve"
+OUT_DIR="traces/gqa_superserve"
 mkdir -p "${OUT_DIR}"
 
 
 python make_traces.py \
-  --pope_jsonl "${Q}" \
-  --images_root "${IMG}" \
-  --ann_dir "${ANN}" \
+  --gqa_jsonl "/storage/ice1/5/3/istephen3/playground/data/gqa/processed/gqa_balanced_val_rawpaths.jsonl" \
   --outdir "${OUT_DIR}" \
   --duration 300 \
   --seed 0 \
