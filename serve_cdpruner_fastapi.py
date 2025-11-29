@@ -345,25 +345,25 @@ async def startup_event():
 
     visual_token_nums = [576, 384, 256, 128, 64]
     batch_sizes = [1, 2, 4, 8]
-
-    print(f"[Profiler] Running offline profile from trace: {trace_path}")
-    SCHEDULER_PROFILE = run_profiler(
-        model=model,
-        tokenizer=tokenizer,
-        image_processor=image_processor,
-        device=device,
-        conv_mode=conv_mode,
-        trace_path=trace_path,
-        visual_token_nums=visual_token_nums,
-        batch_sizes=batch_sizes,
-        max_accuracy_samples=200,
-        max_latency_batches=100,
-        latency_bucket_width_ms=10.0,
-        warmup_iterations=3,
-    )
-    print(f"[Profiler] Done. {len(SCHEDULER_PROFILE['profile_rows'])} rows, "
-          f"{len(SCHEDULER_PROFILE['buckets'])} buckets.")
-    print(SCHEDULER_PROFILE)
+    if FIXED_VTN is None or FIXED_BATCH is None:
+        print(f"[Profiler] Running offline profile from trace: {trace_path}")
+        SCHEDULER_PROFILE = run_profiler(
+            model=model,
+            tokenizer=tokenizer,
+            image_processor=image_processor,
+            device=device,
+            conv_mode=conv_mode,
+            trace_path=trace_path,
+            visual_token_nums=visual_token_nums,
+            batch_sizes=batch_sizes,
+            max_accuracy_samples=200,
+            max_latency_batches=100,
+            latency_bucket_width_ms=10.0,
+            warmup_iterations=3,
+        )
+        print(f"[Profiler] Done. {len(SCHEDULER_PROFILE['profile_rows'])} rows, "
+            f"{len(SCHEDULER_PROFILE['buckets'])} buckets.")
+        print(SCHEDULER_PROFILE)
     asyncio.create_task(controller_loop())
 
 @app.post("/generate", response_model=GenerateResponse)
