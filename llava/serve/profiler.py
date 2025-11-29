@@ -22,6 +22,7 @@ matplotlib.use("Agg")  # non-interactive backend for servers
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+from sklearn.linear_model import LinearRegression
 
 
 @dataclass
@@ -336,6 +337,22 @@ def build_latency_buckets(
 
     return buckets
 
+def get_linear_regression_model_coefficients(profile_rows: List[Dict[str, Any]]):
+    visual_token_num = [r["visual_token_num"] for r in profile_rows]
+    batch_size = [r["batch_size"] for r in profile_rows]
+    latency = [r["latency_ms"] for r in profile_rows]
+
+    X = np.column_stack([visual_token_num, batch_size])
+    y = np.array(latency)
+
+    linear_model = LinearRegression()
+    linear_model.fit(X, y)
+
+    w_v, w_b = linear_model.coef_ 
+    c = linear_model.intercept_
+
+    return w_v, w_b, c
+
 def save_profiler_plots(profile: Dict[str, Any], out_dir: str = "profiler_plots") -> None:
     """
     Save:
@@ -355,6 +372,7 @@ def save_profiler_plots(profile: Dict[str, Any], out_dir: str = "profiler_plots"
 
     # --- common helpers ---
     vtn_values = sorted({r["visual_token_num"] for r in rows})
+    batches = sorted({r["batch_size"] for r in rows})
     # Build mapping (vtn, B) -> row for quick lookup
     row_map = {(r["visual_token_num"], r["batch_size"]): r for r in rows}
 
@@ -375,6 +393,25 @@ def save_profiler_plots(profile: Dict[str, Any], out_dir: str = "profiler_plots"
     ax.grid(True, linestyle="--", alpha=0.3)
     fig.tight_layout()
     fig.savefig(os.path.join(out_dir, "latency_vs_batch.png"))
+    plt.close(fig)
+
+    # ----------------------------------------------------
+    # 1) Latency vs vtn (one curve per batch size)
+    # ----------------------------------------------------
+    fig, ax = plt.subplots()
+    for b in batches:
+        vtns = sorted({r["visual_token_num"] for r in rows if r["batch_size"] == b})
+        lat = [row_map[(vtn, b)]["latency_ms"] for vtn in vtns]
+        err = [row_map[(vtn, b)]["latency_stddev_ms"] for vtn in vtns]
+        ax.plot(vtns, lat, marker="o", label=f"b={b}")
+        ax.errorbar(vtns, lat, yerr=err, fmt="none", capsize=4, alpha=0.7)
+    ax.set_xlabel("VTN")
+    ax.set_ylabel("Latency (ms)")
+    ax.set_title("Latency vs VTN (per batch size)")
+    ax.legend()
+    ax.grid(True, linestyle="--", alpha=0.3)
+    fig.tight_layout()
+    fig.savefig(os.path.join(out_dir, "latency_vs_vtn.png"))
     plt.close(fig)
 
     # ----------------------------------------------------
@@ -530,6 +567,9 @@ def run_profiler(
         row["accuracy"] = row_acc
 
     buckets = build_latency_buckets(profile_rows, bucket_width_ms=latency_bucket_width_ms)
+    
+    w_v, w_b, c = get_linear_regression_model_coefficients(profile_rows)
+    
     profile = {
         "profile_rows": profile_rows,
         "accuracy": accuracy,
@@ -537,10 +577,14 @@ def run_profiler(
         "visual_token_nums": visual_token_nums,
         "batch_sizes": batch_sizes,
         "latency_bucket_width_ms": latency_bucket_width_ms,
+        "w_v": w_v,
+        "w_b": w_b,
+        "c": c,
     }
 
     # Save plots to disk (directory can be overridden via env var)
     plot_dir = os.getenv("CDPRUNER_PROFILE_PLOTS_DIR", "profiler_plots")
+    local_file_path = os.path.join(plot_dir, "data.json")
     try:
         save_profiler_plots(profile, out_dir=plot_dir)
         profile_json_path = os.path.join(plot_dir, "profiler_profile.json")

@@ -119,49 +119,38 @@ def decide_control(metrics: QueueMetrics):
         return vtn, B
 
     global SCHEDULER_PROFILE
-    if SCHEDULER_PROFILE is None or not SCHEDULER_PROFILE.get("buckets"):
+    if SCHEDULER_PROFILE is None or not SCHEDULER_PROFILE.get("w_v") or not SCHEDULER_PROFILE.get("w_b") or not SCHEDULER_PROFILE.get("c"):
         requested = min(metrics.queue_length, MAX_BATCH_SIZE)
         return None, requested
 
-    buckets = SCHEDULER_PROFILE["buckets"]
-    bucket_ids = sorted(int(bid) for bid in buckets.keys())
+    w_v = SCHEDULER_PROFILE["w_v"]
+    w_b = SCHEDULER_PROFILE["w_b"]
+    c   = SCHEDULER_PROFILE["c"]
 
     slack_ms = REQUEST_SLO_MS - metrics.oldest_wait * 1000.0
 
     if slack_ms <= 0:
         print("SLO already violated, picking fastest bucket")
-        chosen_bucket_id = bucket_ids[0]
-    else:
-        # slack, buckets
-        print(f"Slack ms: {slack_ms:.2f}")
-        feasible = [
-            bid for bid in bucket_ids
-            if buckets.get(str(bid), buckets.get(bid, {})).get("latency_ms", float("inf")) <= slack_ms
-        ]
-        if feasible:
-            chosen_bucket_id = max(feasible)
-            print(f"Chosen bucket id: {chosen_bucket_id}")
-        else:
-            print("No feasible bucket, picking fastest bucket")
-            chosen_bucket_id = bucket_ids[0]
-            print(f"Chosen bucket id: {chosen_bucket_id}")
+        return MIN_VTN, MAX_BATCH_SIZE
+    
+    slack_ms = slack_ms * 0.90    # 10% margin
+    
+    # --- 1. Maximize batch size ---
+    # t = w_v * v + w_b * b + c
+    # We use v = MIN_VTN when solving for max b
+    numerator = slack_ms - c - w_v * MIN_VTN
+    if numerator <= 0:
+        return MIN_VTN, MIN_BATCH_SIZE
 
-    bucket = buckets.get(str(chosen_bucket_id)) or buckets.get(chosen_bucket_id)
+    b_cont = numerator / w_b
+    b = int(min(b_cont, MAX_BATCH_SIZE))
+    b = max(b, MIN_BATCH_SIZE)
 
-    choice = (
-        bucket.get("best_choice")
-    )
-    if choice is None:
-        return None, 0
+    # --- 2. Maximize VTN for that batch ---
+    v_cont = (slack_ms - c - w_b * b) / w_v
+    v = max(int(v_cont), MIN_VTN)
 
-    vtn = choice["visual_token_num"]
-    B = choice["batch_size"]
-
-    B = min(B, metrics.queue_length, MAX_BATCH_SIZE)
-    if B <= 0:
-        return None, 0
-
-    return vtn, B
+    return v, b
 
 def build_prompts_and_questions(
     requests: List[QueueItem],

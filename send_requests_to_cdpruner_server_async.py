@@ -13,6 +13,7 @@ slo_violated_count = 0
 slo_violated_count_lock = asyncio.Lock() 
 METRICS: List[Dict] = []
 metrics_lock = asyncio.Lock()
+returned_vtns = []
 
 def load_trace(path: str) -> List[Dict]:
     events = []
@@ -28,7 +29,7 @@ def load_trace(path: str) -> List[Dict]:
 
 async def send_request(session: aiohttp.ClientSession, base_url: str, idx: int, ev: Dict, t0: float):
     """Wait until arrival_time and then send the request asynchronously."""
-    global slo_violated_count, slo_violated_count_lock
+    global slo_violated_count, slo_violated_count_lock, returned_vtns
     arrival = ev["arrival_time"]
     target_time = t0 + arrival
     now = time.time()
@@ -53,6 +54,10 @@ async def send_request(session: aiohttp.ClientSession, base_url: str, idx: int, 
     latency_ms = (finish_time - send_time) * 1000.0
     deadline = ev.get("deadline_ms")
     slo_miss = False
+
+    vtn = data.get("vtn")
+    returned_vtns.append(vtn)
+
     if latency_ms > REQUEST_SLO_MS: # TODO: use REQUEST_SLO_MS or deadline?
         async with slo_violated_count_lock:
             slo_violated_count += 1
@@ -71,7 +76,7 @@ async def send_request(session: aiohttp.ClientSession, base_url: str, idx: int, 
     print(
         f"[{idx}] Q: {ev['question']!r} "
         f"→ answer: {data.get('output', '')[:80]!r} "
-        f"(latency={latency_ms:.1f} ms"
+        f"(vtn={vtn}, latency={latency_ms:.1f} ms"
         + (f", deadline={deadline} ms" if deadline is not None else "")
         + ")"
     )
@@ -133,6 +138,10 @@ def main():
                 f.write(json.dumps(rec) + "\n")
 
     print(f"\nTotal SLO Violations: {slo_violated_count}")
+
+    if returned_vtns:
+        avg_vtn = sum(returned_vtns) / len(returned_vtns)
+        print(f"Average returned visual token num: {avg_vtn:.2f}")
 
 if __name__ == "__main__":
     main()
