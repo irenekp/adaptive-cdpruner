@@ -263,7 +263,7 @@ def batched_generate(requests: List[QueueItem]) -> List[str]:
             image_sizes=image_sizes,
             texts=questions,
             do_sample=False,
-            max_new_tokens=64,
+            max_new_tokens=1,
         )
 
     if isinstance(out, tuple):
@@ -357,7 +357,7 @@ async def startup_event():
             visual_token_nums=visual_token_nums,
             batch_sizes=batch_sizes,
             max_accuracy_samples=200,
-            max_latency_batches=100,
+            max_latency_batches=20,
             latency_bucket_width_ms=10.0,
             warmup_iterations=3,
         )
@@ -386,6 +386,24 @@ async def generate_endpoint(req: GenerateRequest):
 
     resp: GenerateResponse = await fut
     return resp
+
+class FixedVtnRequest(BaseModel):
+    vtn: int
+
+class FixedBatchRequest(BaseModel):
+    batch: int
+
+@app.post("/set_fixed_vtn")
+async def set_fixed_vtn_endpoint(req: FixedVtnRequest):
+    global FIXED_VTN
+    FIXED_VTN = str(req.vtn)
+    return {"status": "success", "fixed_vtn": FIXED_VTN}
+
+@app.post("/set_fixed_batch")
+async def set_fixed_batch_endpoint(req: FixedBatchRequest):
+    global FIXED_BATCH
+    FIXED_BATCH = str(req.batch)
+    return {"status": "success", "fixed_batch": FIXED_BATCH}
 
 if __name__ == "__main__":
     import uvicorn

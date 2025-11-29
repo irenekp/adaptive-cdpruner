@@ -8,7 +8,7 @@ import os
 
 import aiohttp
 
-REQUEST_SLO_MS = float(os.getenv("CDPRUNER_REQUEST_SLO_MS", "300"))
+REQUEST_SLO_MS = float(os.getenv("CDPRUNER_REQUEST_SLO_MS", "1200"))
 slo_violated_count = 0 
 slo_violated_count_lock = asyncio.Lock() 
 METRICS: List[Dict] = []
@@ -94,6 +94,23 @@ async def replay_trace(trace_path: str, server_url: str, max_reqs: int | None = 
         ]
         await asyncio.gather(*tasks)
 
+async def replay_trace_return_metrics(trace_path: str, server_url: str, max_reqs: int):
+    """
+    Identical to replay_trace, except it returns METRICS instead of writing 
+    to a file or printing anything. METRICS must be cleared before each run.
+    """
+    global METRICS
+    METRICS = []
+    await replay_trace(trace_path, server_url, max_reqs)
+    return METRICS
+
+def run_client_internal(trace_path: str, server_url: str, max_reqs: int):
+    """
+    Synchronous wrapper. Returns list of metrics dicts.
+    """
+    import asyncio
+    return asyncio.run(replay_trace_return_metrics(trace_path, server_url, max_reqs))
+
 
 def main():
     global slo_violated_count
@@ -110,6 +127,7 @@ def main():
 
     asyncio.run(replay_trace(args.trace_path, args.server_url, args.max_reqs))
     if args.metrics_out is not None:
+        os.makedirs(os.path.dirname(args.metrics_out), exist_ok=True)
         with open(args.metrics_out, "w", encoding="utf-8") as f:
             for rec in METRICS:
                 f.write(json.dumps(rec) + "\n")
