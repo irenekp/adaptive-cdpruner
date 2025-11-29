@@ -41,9 +41,7 @@ class GqaItem:
     question_id: str
     raw: dict
 
-def _read_jsonl(p) -> Iterator[dict]:
-    # Accept either a path-like object or a string path.
-    p = Path(p)
+def _read_jsonl(p: Path) -> Iterator[dict]:
     with p.open("r", encoding="utf-8", errors="ignore") as f:
         for line in f:
             line = line.strip()
@@ -249,7 +247,7 @@ def main() -> None:
     args = parse_args()
     rng = random.Random(args.seed)
 
-    items = load_gqa_items(args.gqa_jsonl)
+    items = load_gqa_items(Path(args.gqa_jsonl))
     gt_lookup = build_gt_lookup(items)
 
     if args.mode == "constant":
