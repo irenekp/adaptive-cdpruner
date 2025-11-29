@@ -258,7 +258,7 @@ def run_latency_profile(
                     batch_records, image_processor, model, device
                 )
 
-                max_new_tokens = max(rec.max_new_tokens for rec in batch_records)
+                max_new_tokens = 1
                 with torch.inference_mode():
                     _ = model.generate(
                         input_ids,
@@ -543,6 +543,9 @@ def run_profiler(
     plot_dir = os.getenv("CDPRUNER_PROFILE_PLOTS_DIR", "profiler_plots")
     try:
         save_profiler_plots(profile, out_dir=plot_dir)
+        profile_json_path = os.path.join(plot_dir, "profiler_profile.json")
+        with open(profile_json_path, "w") as f:
+            json.dump(profile, f, indent=2)
     except Exception as e:
         print(f"[Profiler] Failed to save plots: {e}")
 
