@@ -162,17 +162,30 @@ def gen_bursty(
     return ts
 
 
-def write_trace(out_path: Path, arrivals: List[float], items: List[GqaItem], 
-                max_new_tokens: int, deadline_ms: int, pruning_ratio: Optional[float],
-                gt_lookup: Dict[Tuple[Optional[int], str], str]) -> int:
+from typing import Optional
+
+def write_trace(
+    out_path: Path,
+    arrivals: List[float],
+    items: List[GqaItem],
+    max_new_tokens: int,
+    deadline_ms: int,
+    pruning_ratio: Optional[float],
+    gt_lookup: Dict[Tuple[Optional[int], str], str],
+    max_reqs: Optional[int] = None,
+) -> int:
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    n=0
+    n = 0
     with out_path.open("w", encoding="utf-8") as f:
-        qi=0
+        qi = 0
         for a in arrivals:
+            if max_reqs is not None and n >= max_reqs:
+                break
+
             it = items[qi % len(items)]
             qi += 1
             gt = gt_lookup.get(it.question_id)
+
             row = {
                 "arrival_time": float(a),
                 "image_path": it.image_path,
@@ -216,6 +229,13 @@ def parse_args():
         required=True,
         help="Output JSONL path",
     )
+    p.add_argument(
+        "--max-reqs",
+        type=int,
+        default=None,
+        help="Optional cap on number of requests to emit into the trace.",
+    )
+
 
     # existing arrival-process args...
     p.add_argument("--qps", type=float, help="Mean QPS for constant/timevary")
@@ -299,8 +319,9 @@ def main() -> None:
         items=items,
         max_new_tokens=args.max_new_tokens,
         deadline_ms=args.deadline_ms,
-        pruning_ratio=None,          # or args.pruning_ratio if you add one later
+        pruning_ratio=None,
         gt_lookup=gt_lookup,
+        max_reqs=args.max_reqs,
     )
 
 

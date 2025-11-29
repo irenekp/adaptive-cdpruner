@@ -12,6 +12,9 @@ from pydantic import BaseModel
 import os
 from llava.serve.profiler import run_profiler, set_visual_tokens
 SCHEDULER_PROFILE = None  # filled at startup
+FIXED_VTN = os.getenv("CDPRUNER_FIXED_VTN")   # e.g. "576" or None
+FIXED_BATCH = os.getenv("CDPRUNER_FIXED_BATCH")  # e.g. "4" or None
+
 # Fixed SLO for all requests (ms)
 REQUEST_SLO_MS = float(os.getenv("CDPRUNER_REQUEST_SLO_MS", "300"))
 
@@ -102,6 +105,15 @@ def decide_control(metrics: QueueMetrics):
     """
     if metrics.queue_length == 0:
         return None, 0
+    
+    # Fixed-baseline mode: ignore SCHEDULER_PROFILE and just return (vtn, B)
+    if FIXED_VTN is not None and FIXED_BATCH is not None:
+        vtn = int(FIXED_VTN)
+        requested_B = int(FIXED_BATCH)
+        B = min(requested_B, metrics.queue_length, MAX_BATCH_SIZE)
+        if B <= 0:
+            return None, 0
+        return vtn, B
 
     global SCHEDULER_PROFILE
     if SCHEDULER_PROFILE is None or not SCHEDULER_PROFILE.get("buckets"):
@@ -180,7 +192,7 @@ def build_prompts_and_questions(
         conv.append_message(conv.roles[1], None)
         prompt = conv.get_prompt()
 
-        questions.append(raw_q)
+        questions.append(raw_q + "\n Your output should be a single word / phrase.")
         prompts.append(prompt)
 
     return questions, prompts
@@ -329,7 +341,7 @@ async def startup_event():
 
     global SCHEDULER_PROFILE
 
-    trace_path = os.getenv("CDPRUNER_PROFILE_TRACE", "traces/sample_trace.jsonl")
+    trace_path = os.getenv("CDPRUNER_PROFILE_TRACE", "/home/hice1/istephen3/CDPruner/traces/sample_trace.jsonl")
 
     visual_token_nums = [576, 384, 256, 128, 64]
     batch_sizes = [1, 2, 4, 8]

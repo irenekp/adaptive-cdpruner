@@ -11,6 +11,8 @@ import aiohttp
 REQUEST_SLO_MS = float(os.getenv("CDPRUNER_REQUEST_SLO_MS", "300"))
 slo_violated_count = 0 
 slo_violated_count_lock = asyncio.Lock() 
+METRICS: List[Dict] = []
+metrics_lock = asyncio.Lock()
 
 def load_trace(path: str) -> List[Dict]:
     events = []
@@ -50,10 +52,21 @@ async def send_request(session: aiohttp.ClientSession, base_url: str, idx: int, 
     finish_time = time.time()
     latency_ms = (finish_time - send_time) * 1000.0
     deadline = ev.get("deadline_ms")
-
+    slo_miss = False
     if latency_ms > REQUEST_SLO_MS: # TODO: use REQUEST_SLO_MS or deadline?
         async with slo_violated_count_lock:
             slo_violated_count += 1
+        slo_miss = True
+    # record metrics for offline analysis
+    record = {
+        "idx": idx,
+        "arrival_time": ev.get("arrival_time"),
+        "latency_ms": latency_ms,
+        "deadline_ms": deadline,
+        "slo_miss": slo_miss,
+    }
+    async with metrics_lock:
+        METRICS.append(record)
 
     print(
         f"[{idx}] Q: {ev['question']!r} "
@@ -90,9 +103,16 @@ def main():
                         help="Base URL of FastAPI server (without /generate).")
     parser.add_argument("--max-reqs", type=int, default=None,
                         help="Optional cap on number of requests to replay.")
+    parser.add_argument("--metrics-out", type=str, default=None,
+                        help="Optional JSONL file to write per-request metrics.")
+
     args = parser.parse_args()
 
     asyncio.run(replay_trace(args.trace_path, args.server_url, args.max_reqs))
+    if args.metrics_out is not None:
+        with open(args.metrics_out, "w", encoding="utf-8") as f:
+            for rec in METRICS:
+                f.write(json.dumps(rec) + "\n")
 
     print(f"\nTotal SLO Violations: {slo_violated_count}")
 
