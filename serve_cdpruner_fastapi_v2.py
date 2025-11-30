@@ -16,7 +16,7 @@ FIXED_VTN = os.getenv("CDPRUNER_FIXED_VTN")   # e.g. "576" or None
 FIXED_BATCH = os.getenv("CDPRUNER_FIXED_BATCH")  # e.g. "4" or None
 
 # Fixed SLO for all requests (ms)
-REQUEST_SLO_MS = float(os.getenv("CDPRUNER_REQUEST_SLO_MS", "1100"))
+REQUEST_SLO_MS = float(os.getenv("CDPRUNER_REQUEST_SLO_MS", "1200"))
 
 from llava.utils import disable_torch_init
 from llava.mm_utils import (

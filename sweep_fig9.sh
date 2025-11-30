@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
-for cv2 in 1 2 3 4 6; do
-    for qps in 5 8 12; do
+for cv2 in 1.5 2 2.5; do
+    for qps in 5 8 10; do
         /storage/ice1/5/3/istephen3/conda-envs/cdpruner/bin/python gen_gqa_traces.py \
             --mode gamma-bursty \
             --qps "$qps" \
@@ -9,7 +9,7 @@ for cv2 in 1 2 3 4 6; do
             --gqa_jsonl /storage/ice1/5/3/istephen3/playground/data/gqa/processed/gqa_balanced_val_rawpaths.jsonl \
             --seed 0 \
             --max_new_tokens 1 \
-            --deadline_ms 1100 \
+            --deadline_ms 1200 \
             --max-reqs 200 \
             --cv2 "$cv2" \
             --out "traces/fig9/gqa_gamma_bursty_qps_${qps}_${cv2}_200.jsonl"
