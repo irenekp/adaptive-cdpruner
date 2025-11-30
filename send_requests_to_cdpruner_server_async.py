@@ -69,6 +69,7 @@ async def send_request(session: aiohttp.ClientSession, base_url: str, idx: int, 
         "latency_ms": latency_ms,
         "deadline_ms": deadline,
         "slo_miss": slo_miss,
+        "vtn": vtn,
     }
     async with metrics_lock:
         METRICS.append(record)
