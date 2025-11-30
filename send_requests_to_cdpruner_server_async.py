@@ -8,7 +8,7 @@ import os
 
 import aiohttp
 
-REQUEST_SLO_MS = float(os.getenv("CDPRUNER_REQUEST_SLO_MS", "1200"))
+REQUEST_SLO_MS = float(os.getenv("CDPRUNER_REQUEST_SLO_MS", "1100"))
 slo_violated_count = 0 
 slo_violated_count_lock = asyncio.Lock() 
 METRICS: List[Dict] = []

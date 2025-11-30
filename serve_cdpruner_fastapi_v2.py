@@ -16,7 +16,7 @@ FIXED_VTN = os.getenv("CDPRUNER_FIXED_VTN")   # e.g. "576" or None
 FIXED_BATCH = os.getenv("CDPRUNER_FIXED_BATCH")  # e.g. "4" or None
 
 # Fixed SLO for all requests (ms)
-REQUEST_SLO_MS = float(os.getenv("CDPRUNER_REQUEST_SLO_MS", "1200"))
+REQUEST_SLO_MS = float(os.getenv("CDPRUNER_REQUEST_SLO_MS", "1100"))
 
 from llava.utils import disable_torch_init
 from llava.mm_utils import (
@@ -42,7 +42,7 @@ class GenerateRequest(BaseModel):
 class GenerateResponse(BaseModel):
     id: str
     output: str
-    vtn: int
+    vtn: Optional[int] = None
 
 @dataclass
 class QueueItem:
@@ -350,8 +350,8 @@ async def startup_event():
                 # if file "/home/hice1/istephen3/CDPruner/profiler_plots/profiler_profile.json" exists
         # SCHEDULER_PROFILE = load_scheduler_profile("/home/hice1/istephen3/CDPruner/profiler_plots/profiler_profile.json")
         # else run profiler
-        if os.path.exists("/home/hice1/nmeda6/adaptive-cdpruner/profiler_plots/profiler_profile.json"):
-            SCHEDULER_PROFILE = load_scheduler_profile("/home/hice1/nmeda6/adaptive-cdpruner/profiler_plots/profiler_profile.json")
+        if os.path.exists("/home/hice1/istephen3/CDPruner/profiler_plots/profiler_profile.json"):
+            SCHEDULER_PROFILE = load_scheduler_profile("/home/hice1/istephen3/CDPruner/profiler_plots/profiler_profile.json")
             print(f"[Profiler] Loaded existing profile with {len(SCHEDULER_PROFILE['profile_rows'])} rows")
             if not SCHEDULER_PROFILE.get("w_v") or not SCHEDULER_PROFILE.get("w_b") or not SCHEDULER_PROFILE.get("c"):
                 print(f"[Profiler] Existing profile missing regression coefficients, recomputing...")

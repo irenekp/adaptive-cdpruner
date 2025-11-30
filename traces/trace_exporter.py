@@ -2,8 +2,8 @@ import json
 import os
 import zipfile
 
-jsonl_path = "/home/hice1/istephen3/CDPruner/traces/fig9/gqa_gamma_bursty_qps_5_100.jsonl"          # path to your jsonl file
-zip_output = "gqa_gamma_bursty_qps_5_100.zip"           # output zip file name
+jsonl_path = "/home/hice1/istephen3/CDPruner/traces/fig9/gqa_gamma_bursty_qps5_cv24_100.jsonl"          # path to your jsonl file
+zip_output = "gqa_gamma_bursty_qps_5_cv2_4_100.zip"           # output zip file name
 
 image_paths = []
 

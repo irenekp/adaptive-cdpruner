@@ -1,0 +1,128 @@
+[
+  {
+    "vtn": 64,
+    "batch": 1,
+    "median_latency": 512.5861167907715,
+    "slo": 1.0
+  },
+  {
+    "vtn": 64,
+    "batch": 2,
+    "median_latency": 197.62539863586426,
+    "slo": 1.0
+  },
+  {
+    "vtn": 64,
+    "batch": 4,
+    "median_latency": 191.82825088500977,
+    "slo": 1.0
+  },
+  {
+    "vtn": 64,
+    "batch": 8,
+    "median_latency": 191.01357460021973,
+    "slo": 1.0
+  },
+  {
+    "vtn": 128,
+    "batch": 1,
+    "median_latency": 711.1847400665283,
+    "slo": 0.65
+  },
+  {
+    "vtn": 128,
+    "batch": 2,
+    "median_latency": 283.4761142730713,
+    "slo": 1.0
+  },
+  {
+    "vtn": 128,
+    "batch": 4,
+    "median_latency": 298.8734245300293,
+    "slo": 1.0
+  },
+  {
+    "vtn": 128,
+    "batch": 8,
+    "median_latency": 291.88990592956543,
+    "slo": 1.0
+  },
+  {
+    "vtn": 256,
+    "batch": 1,
+    "median_latency": 2455.2228450775146,
+    "slo": 0.22
+  },
+  {
+    "vtn": 256,
+    "batch": 2,
+    "median_latency": 819.6144104003906,
+    "slo": 0.69
+  },
+  {
+    "vtn": 256,
+    "batch": 4,
+    "median_latency": 518.7809467315674,
+    "slo": 1.0
+  },
+  {
+    "vtn": 256,
+    "batch": 8,
+    "median_latency": 506.15429878234863,
+    "slo": 1.0
+  },
+  {
+    "vtn": 384,
+    "batch": 1,
+    "median_latency": 5201.693296432495,
+    "slo": 0.1
+  },
+  {
+    "vtn": 384,
+    "batch": 2,
+    "median_latency": 1658.8406562805176,
+    "slo": 0.35
+  },
+  {
+    "vtn": 384,
+    "batch": 4,
+    "median_latency": 903.7120342254639,
+    "slo": 0.7
+  },
+  {
+    "vtn": 384,
+    "batch": 8,
+    "median_latency": 816.7953491210938,
+    "slo": 0.81
+  },
+  {
+    "vtn": 576,
+    "batch": 1,
+    "median_latency": 8896.109580993652,
+    "slo": 0.06
+  },
+  {
+    "vtn": 576,
+    "batch": 2,
+    "median_latency": 3886.794328689575,
+    "slo": 0.1
+  },
+  {
+    "vtn": 576,
+    "batch": 4,
+    "median_latency": 1651.5722274780273,
+    "slo": 0.3
+  },
+  {
+    "vtn": 576,
+    "batch": 8,
+    "median_latency": 1423.8104820251465,
+    "slo": 0.26
+  },
+  {
+    "vtn": "adaptive",
+    "batch": "adaptive",
+    "median_latency": 846.1480140686035,
+    "slo": 0.99
+  }
+]

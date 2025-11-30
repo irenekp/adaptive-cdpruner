@@ -3,1709 +3,1181 @@
     {
       "visual_token_num": 576,
       "batch_size": 1,
-      "latency_ms": 441.8283224105835,
-      "latency_stddev_ms": 5.569199531018436,
-      "throughput_qps": 2.2633225379126265,
+      "latency_ms": 314.39048051834106,
+      "latency_stddev_ms": 1.5099875016921687,
+      "throughput_qps": 3.1807578853891587,
       "accuracy": 0.675
     },
     {
       "visual_token_num": 576,
       "batch_size": 2,
-      "latency_ms": 594.4301605224609,
-      "latency_stddev_ms": 9.086717769827125,
-      "throughput_qps": 3.3645668285777175,
+      "latency_ms": 419.082510471344,
+      "latency_stddev_ms": 8.98862976722385,
+      "throughput_qps": 4.7723299112401305,
       "accuracy": 0.675
     },
     {
       "visual_token_num": 576,
       "batch_size": 4,
-      "latency_ms": 909.6300005912781,
-      "latency_stddev_ms": 19.44859902583401,
-      "throughput_qps": 4.3973923434802265,
+      "latency_ms": 618.9618825912476,
+      "latency_stddev_ms": 9.02990513451103,
+      "throughput_qps": 6.462433491468384,
       "accuracy": 0.675
     },
     {
       "visual_token_num": 576,
       "batch_size": 8,
-      "latency_ms": 1523.397135734558,
-      "latency_stddev_ms": 15.96868045716896,
-      "throughput_qps": 5.251421190405827,
+      "latency_ms": 1020.069682598114,
+      "latency_stddev_ms": 13.383196660330245,
+      "throughput_qps": 7.842601477601047,
       "accuracy": 0.675
     },
     {
       "visual_token_num": 384,
       "batch_size": 1,
-      "latency_ms": 323.151695728302,
-      "latency_stddev_ms": 2.8427449270364016,
-      "throughput_qps": 3.094521901691568,
+      "latency_ms": 247.1082329750061,
+      "latency_stddev_ms": 28.84340774781315,
+      "throughput_qps": 4.046809723661233,
       "accuracy": 0.67
     },
     {
       "visual_token_num": 384,
       "batch_size": 2,
-      "latency_ms": 463.491153717041,
-      "latency_stddev_ms": 8.88545030942648,
-      "throughput_qps": 4.315076963089116,
+      "latency_ms": 322.93365001678467,
+      "latency_stddev_ms": 1.8572135364989266,
+      "throughput_qps": 6.193222663219051,
       "accuracy": 0.67
     },
     {
       "visual_token_num": 384,
       "batch_size": 4,
-      "latency_ms": 717.0056462287903,
-      "latency_stddev_ms": 12.159454954429004,
-      "throughput_qps": 5.578756626309237,
+      "latency_ms": 496.43601179122925,
+      "latency_stddev_ms": 7.100691417080606,
+      "throughput_qps": 8.05743319379126,
       "accuracy": 0.67
     },
     {
       "visual_token_num": 384,
       "batch_size": 8,
-      "latency_ms": 1218.8331961631775,
-      "latency_stddev_ms": 17.43721735453065,
-      "throughput_qps": 6.563654505951739,
+      "latency_ms": 832.2407722473145,
+      "latency_stddev_ms": 9.553719011409585,
+      "throughput_qps": 9.612602826940885,
       "accuracy": 0.67
     },
     {
       "visual_token_num": 256,
       "batch_size": 1,
-      "latency_ms": 246.3502287864685,
-      "latency_stddev_ms": 4.019296515527931,
-      "throughput_qps": 4.059261503129271,
-      "accuracy": 0.65
+      "latency_ms": 183.5099458694458,
+      "latency_stddev_ms": 1.3311137342728263,
+      "throughput_qps": 5.4492959237829455,
+      "accuracy": 0.655
     },
     {
       "visual_token_num": 256,
       "batch_size": 2,
-      "latency_ms": 360.2673649787903,
-      "latency_stddev_ms": 10.40463278424261,
-      "throughput_qps": 5.551432614824116,
-      "accuracy": 0.65
+      "latency_ms": 262.7226710319519,
+      "latency_stddev_ms": 41.46248476866425,
+      "throughput_qps": 7.612590082706503,
+      "accuracy": 0.655
     },
     {
       "visual_token_num": 256,
       "batch_size": 4,
-      "latency_ms": 574.1809725761414,
-      "latency_stddev_ms": 12.803671790542115,
-      "throughput_qps": 6.96644471176649,
-      "accuracy": 0.65
+      "latency_ms": 406.38933181762695,
+      "latency_stddev_ms": 31.069038287419712,
+      "throughput_qps": 9.84277806238048,
+      "accuracy": 0.655
     },
     {
       "visual_token_num": 256,
       "batch_size": 8,
-      "latency_ms": 990.7959938049316,
-      "latency_stddev_ms": 25.735283697944993,
-      "throughput_qps": 8.074316054991078,
-      "accuracy": 0.65
+      "latency_ms": 687.8497123718262,
+      "latency_stddev_ms": 17.01383115325717,
+      "throughput_qps": 11.63044754705879,
+      "accuracy": 0.655
     },
     {
       "visual_token_num": 128,
       "batch_size": 1,
-      "latency_ms": 168.02456378936768,
-      "latency_stddev_ms": 2.2274250321952844,
-      "throughput_qps": 5.95151076394747,
-      "accuracy": 0.65
+      "latency_ms": 128.24493646621704,
+      "latency_stddev_ms": 1.260050355572172,
+      "throughput_qps": 7.7975788171833615,
+      "accuracy": 0.655
     },
     {
       "visual_token_num": 128,
       "batch_size": 2,
-      "latency_ms": 251.2005090713501,
-      "latency_stddev_ms": 9.097697426769368,
-      "throughput_qps": 7.9617673045078385,
-      "accuracy": 0.65
+      "latency_ms": 186.78058385849,
+      "latency_stddev_ms": 1.5271032299356069,
+      "throughput_qps": 10.707751087849976,
+      "accuracy": 0.655
     },
     {
       "visual_token_num": 128,
       "batch_size": 4,
-      "latency_ms": 434.51054096221924,
-      "latency_stddev_ms": 13.151992872938475,
-      "throughput_qps": 9.20576055794191,
-      "accuracy": 0.65
+      "latency_ms": 310.66722869873047,
+      "latency_stddev_ms": 7.788266896993962,
+      "throughput_qps": 12.875513187388682,
+      "accuracy": 0.655
     },
     {
       "visual_token_num": 128,
       "batch_size": 8,
-      "latency_ms": 774.1976976394653,
-      "latency_stddev_ms": 25.464118749063896,
-      "throughput_qps": 10.333277952636724,
-      "accuracy": 0.65
+      "latency_ms": 560.4978322982788,
+      "latency_stddev_ms": 10.078373632455833,
+      "throughput_qps": 14.273025762109743,
+      "accuracy": 0.655
     },
     {
       "visual_token_num": 64,
       "batch_size": 1,
-      "latency_ms": 130.23239374160767,
-      "latency_stddev_ms": 2.1767462629523386,
-      "throughput_qps": 7.678581121560942,
-      "accuracy": 0.65
+      "latency_ms": 106.5618634223938,
+      "latency_stddev_ms": 6.6279857175047185,
+      "throughput_qps": 9.384220281848522,
+      "accuracy": 0.645
     },
     {
       "visual_token_num": 64,
       "batch_size": 2,
-      "latency_ms": 208.78130197525024,
-      "latency_stddev_ms": 3.1305488770472025,
-      "throughput_qps": 9.579401896042816,
-      "accuracy": 0.65
+      "latency_ms": 156.11050128936768,
+      "latency_stddev_ms": 1.6347948510762353,
+      "throughput_qps": 12.811437946078874,
+      "accuracy": 0.645
     },
     {
       "visual_token_num": 64,
       "batch_size": 4,
-      "latency_ms": 363.45289945602417,
-      "latency_stddev_ms": 13.051543360706088,
-      "throughput_qps": 11.0055525928855,
-      "accuracy": 0.65
+      "latency_ms": 270.9588050842285,
+      "latency_stddev_ms": 9.198435225999505,
+      "throughput_qps": 14.762391643838944,
+      "accuracy": 0.645
     },
     {
       "visual_token_num": 64,
       "batch_size": 8,
-      "latency_ms": 663.5838150978088,
-      "latency_stddev_ms": 20.187311850711595,
-      "throughput_qps": 12.055749127667982,
-      "accuracy": 0.65
+      "latency_ms": 499.60747957229614,
+      "latency_stddev_ms": 12.344797958647742,
+      "throughput_qps": 16.012570522059914,
+      "accuracy": 0.645
     }
   ],
   "accuracy": {
     "576": 0.675,
     "384": 0.67,
-    "256": 0.65,
-    "128": 0.65,
-    "64": 0.65
+    "256": 0.655,
+    "128": 0.655,
+    "64": 0.645
   },
   "buckets": {
     "0": {
-      "latency_ms": 140.23239374160767,
+      "latency_ms": 116.5618634223938,
       "best_choice": {
         "visual_token_num": 64,
         "batch_size": 1,
-        "latency_ms": 130.23239374160767,
-        "latency_stddev_ms": 2.1767462629523386,
-        "throughput_qps": 7.678581121560942,
-        "accuracy": 0.65
+        "latency_ms": 106.5618634223938,
+        "latency_stddev_ms": 6.6279857175047185,
+        "throughput_qps": 9.384220281848522,
+        "accuracy": 0.645
       }
     },
     "1": {
-      "latency_ms": 150.23239374160767,
+      "latency_ms": 126.5618634223938,
       "best_choice": {
         "visual_token_num": 64,
         "batch_size": 1,
-        "latency_ms": 130.23239374160767,
-        "latency_stddev_ms": 2.1767462629523386,
-        "throughput_qps": 7.678581121560942,
-        "accuracy": 0.65
+        "latency_ms": 106.5618634223938,
+        "latency_stddev_ms": 6.6279857175047185,
+        "throughput_qps": 9.384220281848522,
+        "accuracy": 0.645
       }
     },
     "2": {
-      "latency_ms": 160.23239374160767,
+      "latency_ms": 136.5618634223938,
       "best_choice": {
-        "visual_token_num": 64,
+        "visual_token_num": 128,
         "batch_size": 1,
-        "latency_ms": 130.23239374160767,
-        "latency_stddev_ms": 2.1767462629523386,
-        "throughput_qps": 7.678581121560942,
-        "accuracy": 0.65
+        "latency_ms": 128.24493646621704,
+        "latency_stddev_ms": 1.260050355572172,
+        "throughput_qps": 7.7975788171833615,
+        "accuracy": 0.655
       }
     },
     "3": {
-      "latency_ms": 170.23239374160767,
+      "latency_ms": 146.5618634223938,
       "best_choice": {
         "visual_token_num": 128,
         "batch_size": 1,
-        "latency_ms": 168.02456378936768,
-        "latency_stddev_ms": 2.2274250321952844,
-        "throughput_qps": 5.95151076394747,
-        "accuracy": 0.65
+        "latency_ms": 128.24493646621704,
+        "latency_stddev_ms": 1.260050355572172,
+        "throughput_qps": 7.7975788171833615,
+        "accuracy": 0.655
       }
     },
     "4": {
-      "latency_ms": 180.23239374160767,
+      "latency_ms": 156.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
-        "batch_size": 1,
-        "latency_ms": 168.02456378936768,
-        "latency_stddev_ms": 2.2274250321952844,
-        "throughput_qps": 5.95151076394747,
-        "accuracy": 0.65
+        "visual_token_num": 64,
+        "batch_size": 2,
+        "latency_ms": 156.11050128936768,
+        "latency_stddev_ms": 1.6347948510762353,
+        "throughput_qps": 12.811437946078874,
+        "accuracy": 0.645
       }
     },
     "5": {
-      "latency_ms": 190.23239374160767,
+      "latency_ms": 166.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
-        "batch_size": 1,
-        "latency_ms": 168.02456378936768,
-        "latency_stddev_ms": 2.2274250321952844,
-        "throughput_qps": 5.95151076394747,
-        "accuracy": 0.65
+        "visual_token_num": 64,
+        "batch_size": 2,
+        "latency_ms": 156.11050128936768,
+        "latency_stddev_ms": 1.6347948510762353,
+        "throughput_qps": 12.811437946078874,
+        "accuracy": 0.645
       }
     },
     "6": {
-      "latency_ms": 200.23239374160767,
+      "latency_ms": 176.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
-        "batch_size": 1,
-        "latency_ms": 168.02456378936768,
-        "latency_stddev_ms": 2.2274250321952844,
-        "throughput_qps": 5.95151076394747,
-        "accuracy": 0.65
+        "visual_token_num": 64,
+        "batch_size": 2,
+        "latency_ms": 156.11050128936768,
+        "latency_stddev_ms": 1.6347948510762353,
+        "throughput_qps": 12.811437946078874,
+        "accuracy": 0.645
       }
     },
     "7": {
-      "latency_ms": 210.23239374160767,
+      "latency_ms": 186.5618634223938,
       "best_choice": {
         "visual_token_num": 64,
         "batch_size": 2,
-        "latency_ms": 208.78130197525024,
-        "latency_stddev_ms": 3.1305488770472025,
-        "throughput_qps": 9.579401896042816,
-        "accuracy": 0.65
+        "latency_ms": 156.11050128936768,
+        "latency_stddev_ms": 1.6347948510762353,
+        "throughput_qps": 12.811437946078874,
+        "accuracy": 0.645
       }
     },
     "8": {
-      "latency_ms": 220.23239374160767,
+      "latency_ms": 196.5618634223938,
       "best_choice": {
-        "visual_token_num": 64,
+        "visual_token_num": 128,
         "batch_size": 2,
-        "latency_ms": 208.78130197525024,
-        "latency_stddev_ms": 3.1305488770472025,
-        "throughput_qps": 9.579401896042816,
-        "accuracy": 0.65
+        "latency_ms": 186.78058385849,
+        "latency_stddev_ms": 1.5271032299356069,
+        "throughput_qps": 10.707751087849976,
+        "accuracy": 0.655
       }
     },
     "9": {
-      "latency_ms": 230.23239374160767,
+      "latency_ms": 206.5618634223938,
       "best_choice": {
-        "visual_token_num": 64,
+        "visual_token_num": 128,
         "batch_size": 2,
-        "latency_ms": 208.78130197525024,
-        "latency_stddev_ms": 3.1305488770472025,
-        "throughput_qps": 9.579401896042816,
-        "accuracy": 0.65
+        "latency_ms": 186.78058385849,
+        "latency_stddev_ms": 1.5271032299356069,
+        "throughput_qps": 10.707751087849976,
+        "accuracy": 0.655
       }
     },
     "10": {
-      "latency_ms": 240.23239374160767,
+      "latency_ms": 216.5618634223938,
       "best_choice": {
-        "visual_token_num": 64,
+        "visual_token_num": 128,
         "batch_size": 2,
-        "latency_ms": 208.78130197525024,
-        "latency_stddev_ms": 3.1305488770472025,
-        "throughput_qps": 9.579401896042816,
-        "accuracy": 0.65
+        "latency_ms": 186.78058385849,
+        "latency_stddev_ms": 1.5271032299356069,
+        "throughput_qps": 10.707751087849976,
+        "accuracy": 0.655
       }
     },
     "11": {
-      "latency_ms": 250.23239374160767,
+      "latency_ms": 226.5618634223938,
       "best_choice": {
-        "visual_token_num": 64,
+        "visual_token_num": 128,
         "batch_size": 2,
-        "latency_ms": 208.78130197525024,
-        "latency_stddev_ms": 3.1305488770472025,
-        "throughput_qps": 9.579401896042816,
-        "accuracy": 0.65
+        "latency_ms": 186.78058385849,
+        "latency_stddev_ms": 1.5271032299356069,
+        "throughput_qps": 10.707751087849976,
+        "accuracy": 0.655
       }
     },
     "12": {
-      "latency_ms": 260.23239374160767,
+      "latency_ms": 236.5618634223938,
       "best_choice": {
         "visual_token_num": 128,
         "batch_size": 2,
-        "latency_ms": 251.2005090713501,
-        "latency_stddev_ms": 9.097697426769368,
-        "throughput_qps": 7.9617673045078385,
-        "accuracy": 0.65
+        "latency_ms": 186.78058385849,
+        "latency_stddev_ms": 1.5271032299356069,
+        "throughput_qps": 10.707751087849976,
+        "accuracy": 0.655
       }
     },
     "13": {
-      "latency_ms": 270.23239374160767,
+      "latency_ms": 246.5618634223938,
       "best_choice": {
         "visual_token_num": 128,
         "batch_size": 2,
-        "latency_ms": 251.2005090713501,
-        "latency_stddev_ms": 9.097697426769368,
-        "throughput_qps": 7.9617673045078385,
-        "accuracy": 0.65
+        "latency_ms": 186.78058385849,
+        "latency_stddev_ms": 1.5271032299356069,
+        "throughput_qps": 10.707751087849976,
+        "accuracy": 0.655
       }
     },
     "14": {
-      "latency_ms": 280.23239374160767,
+      "latency_ms": 256.5618634223938,
       "best_choice": {
         "visual_token_num": 128,
         "batch_size": 2,
-        "latency_ms": 251.2005090713501,
-        "latency_stddev_ms": 9.097697426769368,
-        "throughput_qps": 7.9617673045078385,
-        "accuracy": 0.65
+        "latency_ms": 186.78058385849,
+        "latency_stddev_ms": 1.5271032299356069,
+        "throughput_qps": 10.707751087849976,
+        "accuracy": 0.655
       }
     },
     "15": {
-      "latency_ms": 290.23239374160767,
+      "latency_ms": 266.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 256,
         "batch_size": 2,
-        "latency_ms": 251.2005090713501,
-        "latency_stddev_ms": 9.097697426769368,
-        "throughput_qps": 7.9617673045078385,
-        "accuracy": 0.65
+        "latency_ms": 262.7226710319519,
+        "latency_stddev_ms": 41.46248476866425,
+        "throughput_qps": 7.612590082706503,
+        "accuracy": 0.655
       }
     },
     "16": {
-      "latency_ms": 300.23239374160767,
+      "latency_ms": 276.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
-        "batch_size": 2,
-        "latency_ms": 251.2005090713501,
-        "latency_stddev_ms": 9.097697426769368,
-        "throughput_qps": 7.9617673045078385,
-        "accuracy": 0.65
+        "visual_token_num": 64,
+        "batch_size": 4,
+        "latency_ms": 270.9588050842285,
+        "latency_stddev_ms": 9.198435225999505,
+        "throughput_qps": 14.762391643838944,
+        "accuracy": 0.645
       }
     },
     "17": {
-      "latency_ms": 310.23239374160767,
+      "latency_ms": 286.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
-        "batch_size": 2,
-        "latency_ms": 251.2005090713501,
-        "latency_stddev_ms": 9.097697426769368,
-        "throughput_qps": 7.9617673045078385,
-        "accuracy": 0.65
+        "visual_token_num": 64,
+        "batch_size": 4,
+        "latency_ms": 270.9588050842285,
+        "latency_stddev_ms": 9.198435225999505,
+        "throughput_qps": 14.762391643838944,
+        "accuracy": 0.645
       }
     },
     "18": {
-      "latency_ms": 320.23239374160767,
+      "latency_ms": 296.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
-        "batch_size": 2,
-        "latency_ms": 251.2005090713501,
-        "latency_stddev_ms": 9.097697426769368,
-        "throughput_qps": 7.9617673045078385,
-        "accuracy": 0.65
+        "visual_token_num": 64,
+        "batch_size": 4,
+        "latency_ms": 270.9588050842285,
+        "latency_stddev_ms": 9.198435225999505,
+        "throughput_qps": 14.762391643838944,
+        "accuracy": 0.645
       }
     },
     "19": {
-      "latency_ms": 330.23239374160767,
+      "latency_ms": 306.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
-        "batch_size": 2,
-        "latency_ms": 251.2005090713501,
-        "latency_stddev_ms": 9.097697426769368,
-        "throughput_qps": 7.9617673045078385,
-        "accuracy": 0.65
+        "visual_token_num": 64,
+        "batch_size": 4,
+        "latency_ms": 270.9588050842285,
+        "latency_stddev_ms": 9.198435225999505,
+        "throughput_qps": 14.762391643838944,
+        "accuracy": 0.645
       }
     },
     "20": {
-      "latency_ms": 340.23239374160767,
+      "latency_ms": 316.5618634223938,
       "best_choice": {
         "visual_token_num": 128,
-        "batch_size": 2,
-        "latency_ms": 251.2005090713501,
-        "latency_stddev_ms": 9.097697426769368,
-        "throughput_qps": 7.9617673045078385,
-        "accuracy": 0.65
+        "batch_size": 4,
+        "latency_ms": 310.66722869873047,
+        "latency_stddev_ms": 7.788266896993962,
+        "throughput_qps": 12.875513187388682,
+        "accuracy": 0.655
       }
     },
     "21": {
-      "latency_ms": 350.23239374160767,
+      "latency_ms": 326.5618634223938,
       "best_choice": {
         "visual_token_num": 128,
-        "batch_size": 2,
-        "latency_ms": 251.2005090713501,
-        "latency_stddev_ms": 9.097697426769368,
-        "throughput_qps": 7.9617673045078385,
-        "accuracy": 0.65
+        "batch_size": 4,
+        "latency_ms": 310.66722869873047,
+        "latency_stddev_ms": 7.788266896993962,
+        "throughput_qps": 12.875513187388682,
+        "accuracy": 0.655
       }
     },
     "22": {
-      "latency_ms": 360.23239374160767,
+      "latency_ms": 336.5618634223938,
       "best_choice": {
         "visual_token_num": 128,
-        "batch_size": 2,
-        "latency_ms": 251.2005090713501,
-        "latency_stddev_ms": 9.097697426769368,
-        "throughput_qps": 7.9617673045078385,
-        "accuracy": 0.65
+        "batch_size": 4,
+        "latency_ms": 310.66722869873047,
+        "latency_stddev_ms": 7.788266896993962,
+        "throughput_qps": 12.875513187388682,
+        "accuracy": 0.655
       }
     },
     "23": {
-      "latency_ms": 370.23239374160767,
+      "latency_ms": 346.5618634223938,
       "best_choice": {
-        "visual_token_num": 64,
+        "visual_token_num": 128,
         "batch_size": 4,
-        "latency_ms": 363.45289945602417,
-        "latency_stddev_ms": 13.051543360706088,
-        "throughput_qps": 11.0055525928855,
-        "accuracy": 0.65
+        "latency_ms": 310.66722869873047,
+        "latency_stddev_ms": 7.788266896993962,
+        "throughput_qps": 12.875513187388682,
+        "accuracy": 0.655
       }
     },
     "24": {
-      "latency_ms": 380.23239374160767,
+      "latency_ms": 356.5618634223938,
       "best_choice": {
-        "visual_token_num": 64,
+        "visual_token_num": 128,
         "batch_size": 4,
-        "latency_ms": 363.45289945602417,
-        "latency_stddev_ms": 13.051543360706088,
-        "throughput_qps": 11.0055525928855,
-        "accuracy": 0.65
+        "latency_ms": 310.66722869873047,
+        "latency_stddev_ms": 7.788266896993962,
+        "throughput_qps": 12.875513187388682,
+        "accuracy": 0.655
       }
     },
     "25": {
-      "latency_ms": 390.23239374160767,
+      "latency_ms": 366.5618634223938,
       "best_choice": {
-        "visual_token_num": 64,
+        "visual_token_num": 128,
         "batch_size": 4,
-        "latency_ms": 363.45289945602417,
-        "latency_stddev_ms": 13.051543360706088,
-        "throughput_qps": 11.0055525928855,
-        "accuracy": 0.65
+        "latency_ms": 310.66722869873047,
+        "latency_stddev_ms": 7.788266896993962,
+        "throughput_qps": 12.875513187388682,
+        "accuracy": 0.655
       }
     },
     "26": {
-      "latency_ms": 400.23239374160767,
+      "latency_ms": 376.5618634223938,
       "best_choice": {
-        "visual_token_num": 64,
+        "visual_token_num": 128,
         "batch_size": 4,
-        "latency_ms": 363.45289945602417,
-        "latency_stddev_ms": 13.051543360706088,
-        "throughput_qps": 11.0055525928855,
-        "accuracy": 0.65
+        "latency_ms": 310.66722869873047,
+        "latency_stddev_ms": 7.788266896993962,
+        "throughput_qps": 12.875513187388682,
+        "accuracy": 0.655
       }
     },
     "27": {
-      "latency_ms": 410.23239374160767,
+      "latency_ms": 386.5618634223938,
       "best_choice": {
-        "visual_token_num": 64,
+        "visual_token_num": 128,
         "batch_size": 4,
-        "latency_ms": 363.45289945602417,
-        "latency_stddev_ms": 13.051543360706088,
-        "throughput_qps": 11.0055525928855,
-        "accuracy": 0.65
+        "latency_ms": 310.66722869873047,
+        "latency_stddev_ms": 7.788266896993962,
+        "throughput_qps": 12.875513187388682,
+        "accuracy": 0.655
       }
     },
     "28": {
-      "latency_ms": 420.23239374160767,
+      "latency_ms": 396.5618634223938,
       "best_choice": {
-        "visual_token_num": 64,
+        "visual_token_num": 128,
         "batch_size": 4,
-        "latency_ms": 363.45289945602417,
-        "latency_stddev_ms": 13.051543360706088,
-        "throughput_qps": 11.0055525928855,
-        "accuracy": 0.65
+        "latency_ms": 310.66722869873047,
+        "latency_stddev_ms": 7.788266896993962,
+        "throughput_qps": 12.875513187388682,
+        "accuracy": 0.655
       }
     },
     "29": {
-      "latency_ms": 430.23239374160767,
+      "latency_ms": 406.5618634223938,
       "best_choice": {
-        "visual_token_num": 64,
+        "visual_token_num": 256,
         "batch_size": 4,
-        "latency_ms": 363.45289945602417,
-        "latency_stddev_ms": 13.051543360706088,
-        "throughput_qps": 11.0055525928855,
-        "accuracy": 0.65
+        "latency_ms": 406.38933181762695,
+        "latency_stddev_ms": 31.069038287419712,
+        "throughput_qps": 9.84277806238048,
+        "accuracy": 0.655
       }
     },
     "30": {
-      "latency_ms": 440.23239374160767,
+      "latency_ms": 416.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 256,
         "batch_size": 4,
-        "latency_ms": 434.51054096221924,
-        "latency_stddev_ms": 13.151992872938475,
-        "throughput_qps": 9.20576055794191,
-        "accuracy": 0.65
+        "latency_ms": 406.38933181762695,
+        "latency_stddev_ms": 31.069038287419712,
+        "throughput_qps": 9.84277806238048,
+        "accuracy": 0.655
       }
     },
     "31": {
-      "latency_ms": 450.23239374160767,
+      "latency_ms": 426.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 256,
         "batch_size": 4,
-        "latency_ms": 434.51054096221924,
-        "latency_stddev_ms": 13.151992872938475,
-        "throughput_qps": 9.20576055794191,
-        "accuracy": 0.65
+        "latency_ms": 406.38933181762695,
+        "latency_stddev_ms": 31.069038287419712,
+        "throughput_qps": 9.84277806238048,
+        "accuracy": 0.655
       }
     },
     "32": {
-      "latency_ms": 460.23239374160767,
+      "latency_ms": 436.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 256,
         "batch_size": 4,
-        "latency_ms": 434.51054096221924,
-        "latency_stddev_ms": 13.151992872938475,
-        "throughput_qps": 9.20576055794191,
-        "accuracy": 0.65
+        "latency_ms": 406.38933181762695,
+        "latency_stddev_ms": 31.069038287419712,
+        "throughput_qps": 9.84277806238048,
+        "accuracy": 0.655
       }
     },
     "33": {
-      "latency_ms": 470.23239374160767,
+      "latency_ms": 446.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 256,
         "batch_size": 4,
-        "latency_ms": 434.51054096221924,
-        "latency_stddev_ms": 13.151992872938475,
-        "throughput_qps": 9.20576055794191,
-        "accuracy": 0.65
+        "latency_ms": 406.38933181762695,
+        "latency_stddev_ms": 31.069038287419712,
+        "throughput_qps": 9.84277806238048,
+        "accuracy": 0.655
       }
     },
     "34": {
-      "latency_ms": 480.23239374160767,
+      "latency_ms": 456.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 256,
         "batch_size": 4,
-        "latency_ms": 434.51054096221924,
-        "latency_stddev_ms": 13.151992872938475,
-        "throughput_qps": 9.20576055794191,
-        "accuracy": 0.65
+        "latency_ms": 406.38933181762695,
+        "latency_stddev_ms": 31.069038287419712,
+        "throughput_qps": 9.84277806238048,
+        "accuracy": 0.655
       }
     },
     "35": {
-      "latency_ms": 490.23239374160767,
+      "latency_ms": 466.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 256,
         "batch_size": 4,
-        "latency_ms": 434.51054096221924,
-        "latency_stddev_ms": 13.151992872938475,
-        "throughput_qps": 9.20576055794191,
-        "accuracy": 0.65
+        "latency_ms": 406.38933181762695,
+        "latency_stddev_ms": 31.069038287419712,
+        "throughput_qps": 9.84277806238048,
+        "accuracy": 0.655
       }
     },
     "36": {
-      "latency_ms": 500.23239374160767,
+      "latency_ms": 476.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 256,
         "batch_size": 4,
-        "latency_ms": 434.51054096221924,
-        "latency_stddev_ms": 13.151992872938475,
-        "throughput_qps": 9.20576055794191,
-        "accuracy": 0.65
+        "latency_ms": 406.38933181762695,
+        "latency_stddev_ms": 31.069038287419712,
+        "throughput_qps": 9.84277806238048,
+        "accuracy": 0.655
       }
     },
     "37": {
-      "latency_ms": 510.23239374160767,
+      "latency_ms": 486.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 256,
         "batch_size": 4,
-        "latency_ms": 434.51054096221924,
-        "latency_stddev_ms": 13.151992872938475,
-        "throughput_qps": 9.20576055794191,
-        "accuracy": 0.65
+        "latency_ms": 406.38933181762695,
+        "latency_stddev_ms": 31.069038287419712,
+        "throughput_qps": 9.84277806238048,
+        "accuracy": 0.655
       }
     },
     "38": {
-      "latency_ms": 520.2323937416077,
+      "latency_ms": 496.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 384,
         "batch_size": 4,
-        "latency_ms": 434.51054096221924,
-        "latency_stddev_ms": 13.151992872938475,
-        "throughput_qps": 9.20576055794191,
-        "accuracy": 0.65
+        "latency_ms": 496.43601179122925,
+        "latency_stddev_ms": 7.100691417080606,
+        "throughput_qps": 8.05743319379126,
+        "accuracy": 0.67
       }
     },
     "39": {
-      "latency_ms": 530.2323937416077,
+      "latency_ms": 506.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
-        "batch_size": 4,
-        "latency_ms": 434.51054096221924,
-        "latency_stddev_ms": 13.151992872938475,
-        "throughput_qps": 9.20576055794191,
-        "accuracy": 0.65
+        "visual_token_num": 64,
+        "batch_size": 8,
+        "latency_ms": 499.60747957229614,
+        "latency_stddev_ms": 12.344797958647742,
+        "throughput_qps": 16.012570522059914,
+        "accuracy": 0.645
       }
     },
     "40": {
-      "latency_ms": 540.2323937416077,
+      "latency_ms": 516.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
-        "batch_size": 4,
-        "latency_ms": 434.51054096221924,
-        "latency_stddev_ms": 13.151992872938475,
-        "throughput_qps": 9.20576055794191,
-        "accuracy": 0.65
+        "visual_token_num": 64,
+        "batch_size": 8,
+        "latency_ms": 499.60747957229614,
+        "latency_stddev_ms": 12.344797958647742,
+        "throughput_qps": 16.012570522059914,
+        "accuracy": 0.645
       }
     },
     "41": {
-      "latency_ms": 550.2323937416077,
+      "latency_ms": 526.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
-        "batch_size": 4,
-        "latency_ms": 434.51054096221924,
-        "latency_stddev_ms": 13.151992872938475,
-        "throughput_qps": 9.20576055794191,
-        "accuracy": 0.65
+        "visual_token_num": 64,
+        "batch_size": 8,
+        "latency_ms": 499.60747957229614,
+        "latency_stddev_ms": 12.344797958647742,
+        "throughput_qps": 16.012570522059914,
+        "accuracy": 0.645
       }
     },
     "42": {
-      "latency_ms": 560.2323937416077,
+      "latency_ms": 536.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
-        "batch_size": 4,
-        "latency_ms": 434.51054096221924,
-        "latency_stddev_ms": 13.151992872938475,
-        "throughput_qps": 9.20576055794191,
-        "accuracy": 0.65
+        "visual_token_num": 64,
+        "batch_size": 8,
+        "latency_ms": 499.60747957229614,
+        "latency_stddev_ms": 12.344797958647742,
+        "throughput_qps": 16.012570522059914,
+        "accuracy": 0.645
       }
     },
     "43": {
-      "latency_ms": 570.2323937416077,
+      "latency_ms": 546.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
-        "batch_size": 4,
-        "latency_ms": 434.51054096221924,
-        "latency_stddev_ms": 13.151992872938475,
-        "throughput_qps": 9.20576055794191,
-        "accuracy": 0.65
+        "visual_token_num": 64,
+        "batch_size": 8,
+        "latency_ms": 499.60747957229614,
+        "latency_stddev_ms": 12.344797958647742,
+        "throughput_qps": 16.012570522059914,
+        "accuracy": 0.645
       }
     },
     "44": {
-      "latency_ms": 580.2323937416077,
+      "latency_ms": 556.5618634223938,
       "best_choice": {
-        "visual_token_num": 256,
-        "batch_size": 4,
-        "latency_ms": 574.1809725761414,
-        "latency_stddev_ms": 12.803671790542115,
-        "throughput_qps": 6.96644471176649,
-        "accuracy": 0.65
+        "visual_token_num": 64,
+        "batch_size": 8,
+        "latency_ms": 499.60747957229614,
+        "latency_stddev_ms": 12.344797958647742,
+        "throughput_qps": 16.012570522059914,
+        "accuracy": 0.645
       }
     },
     "45": {
-      "latency_ms": 590.2323937416077,
+      "latency_ms": 566.5618634223938,
       "best_choice": {
-        "visual_token_num": 256,
-        "batch_size": 4,
-        "latency_ms": 574.1809725761414,
-        "latency_stddev_ms": 12.803671790542115,
-        "throughput_qps": 6.96644471176649,
-        "accuracy": 0.65
+        "visual_token_num": 128,
+        "batch_size": 8,
+        "latency_ms": 560.4978322982788,
+        "latency_stddev_ms": 10.078373632455833,
+        "throughput_qps": 14.273025762109743,
+        "accuracy": 0.655
       }
     },
     "46": {
-      "latency_ms": 600.2323937416077,
+      "latency_ms": 576.5618634223938,
       "best_choice": {
-        "visual_token_num": 256,
-        "batch_size": 4,
-        "latency_ms": 574.1809725761414,
-        "latency_stddev_ms": 12.803671790542115,
-        "throughput_qps": 6.96644471176649,
-        "accuracy": 0.65
+        "visual_token_num": 128,
+        "batch_size": 8,
+        "latency_ms": 560.4978322982788,
+        "latency_stddev_ms": 10.078373632455833,
+        "throughput_qps": 14.273025762109743,
+        "accuracy": 0.655
       }
     },
     "47": {
-      "latency_ms": 610.2323937416077,
+      "latency_ms": 586.5618634223938,
       "best_choice": {
-        "visual_token_num": 256,
-        "batch_size": 4,
-        "latency_ms": 574.1809725761414,
-        "latency_stddev_ms": 12.803671790542115,
-        "throughput_qps": 6.96644471176649,
-        "accuracy": 0.65
+        "visual_token_num": 128,
+        "batch_size": 8,
+        "latency_ms": 560.4978322982788,
+        "latency_stddev_ms": 10.078373632455833,
+        "throughput_qps": 14.273025762109743,
+        "accuracy": 0.655
       }
     },
     "48": {
-      "latency_ms": 620.2323937416077,
+      "latency_ms": 596.5618634223938,
       "best_choice": {
-        "visual_token_num": 256,
-        "batch_size": 4,
-        "latency_ms": 574.1809725761414,
-        "latency_stddev_ms": 12.803671790542115,
-        "throughput_qps": 6.96644471176649,
-        "accuracy": 0.65
+        "visual_token_num": 128,
+        "batch_size": 8,
+        "latency_ms": 560.4978322982788,
+        "latency_stddev_ms": 10.078373632455833,
+        "throughput_qps": 14.273025762109743,
+        "accuracy": 0.655
       }
     },
     "49": {
-      "latency_ms": 630.2323937416077,
+      "latency_ms": 606.5618634223938,
       "best_choice": {
-        "visual_token_num": 256,
-        "batch_size": 4,
-        "latency_ms": 574.1809725761414,
-        "latency_stddev_ms": 12.803671790542115,
-        "throughput_qps": 6.96644471176649,
-        "accuracy": 0.65
+        "visual_token_num": 128,
+        "batch_size": 8,
+        "latency_ms": 560.4978322982788,
+        "latency_stddev_ms": 10.078373632455833,
+        "throughput_qps": 14.273025762109743,
+        "accuracy": 0.655
       }
     },
     "50": {
-      "latency_ms": 640.2323937416077,
+      "latency_ms": 616.5618634223938,
       "best_choice": {
-        "visual_token_num": 256,
-        "batch_size": 4,
-        "latency_ms": 574.1809725761414,
-        "latency_stddev_ms": 12.803671790542115,
-        "throughput_qps": 6.96644471176649,
-        "accuracy": 0.65
+        "visual_token_num": 128,
+        "batch_size": 8,
+        "latency_ms": 560.4978322982788,
+        "latency_stddev_ms": 10.078373632455833,
+        "throughput_qps": 14.273025762109743,
+        "accuracy": 0.655
       }
     },
     "51": {
-      "latency_ms": 650.2323937416077,
+      "latency_ms": 626.5618634223938,
       "best_choice": {
-        "visual_token_num": 256,
-        "batch_size": 4,
-        "latency_ms": 574.1809725761414,
-        "latency_stddev_ms": 12.803671790542115,
-        "throughput_qps": 6.96644471176649,
-        "accuracy": 0.65
+        "visual_token_num": 128,
+        "batch_size": 8,
+        "latency_ms": 560.4978322982788,
+        "latency_stddev_ms": 10.078373632455833,
+        "throughput_qps": 14.273025762109743,
+        "accuracy": 0.655
       }
     },
     "52": {
-      "latency_ms": 660.2323937416077,
+      "latency_ms": 636.5618634223938,
       "best_choice": {
-        "visual_token_num": 256,
-        "batch_size": 4,
-        "latency_ms": 574.1809725761414,
-        "latency_stddev_ms": 12.803671790542115,
-        "throughput_qps": 6.96644471176649,
-        "accuracy": 0.65
+        "visual_token_num": 128,
+        "batch_size": 8,
+        "latency_ms": 560.4978322982788,
+        "latency_stddev_ms": 10.078373632455833,
+        "throughput_qps": 14.273025762109743,
+        "accuracy": 0.655
       }
     },
     "53": {
-      "latency_ms": 670.2323937416077,
+      "latency_ms": 646.5618634223938,
       "best_choice": {
-        "visual_token_num": 64,
+        "visual_token_num": 128,
         "batch_size": 8,
-        "latency_ms": 663.5838150978088,
-        "latency_stddev_ms": 20.187311850711595,
-        "throughput_qps": 12.055749127667982,
-        "accuracy": 0.65
+        "latency_ms": 560.4978322982788,
+        "latency_stddev_ms": 10.078373632455833,
+        "throughput_qps": 14.273025762109743,
+        "accuracy": 0.655
       }
     },
     "54": {
-      "latency_ms": 680.2323937416077,
+      "latency_ms": 656.5618634223938,
       "best_choice": {
-        "visual_token_num": 64,
+        "visual_token_num": 128,
         "batch_size": 8,
-        "latency_ms": 663.5838150978088,
-        "latency_stddev_ms": 20.187311850711595,
-        "throughput_qps": 12.055749127667982,
-        "accuracy": 0.65
+        "latency_ms": 560.4978322982788,
+        "latency_stddev_ms": 10.078373632455833,
+        "throughput_qps": 14.273025762109743,
+        "accuracy": 0.655
       }
     },
     "55": {
-      "latency_ms": 690.2323937416077,
+      "latency_ms": 666.5618634223938,
       "best_choice": {
-        "visual_token_num": 64,
+        "visual_token_num": 128,
         "batch_size": 8,
-        "latency_ms": 663.5838150978088,
-        "latency_stddev_ms": 20.187311850711595,
-        "throughput_qps": 12.055749127667982,
-        "accuracy": 0.65
+        "latency_ms": 560.4978322982788,
+        "latency_stddev_ms": 10.078373632455833,
+        "throughput_qps": 14.273025762109743,
+        "accuracy": 0.655
       }
     },
     "56": {
-      "latency_ms": 700.2323937416077,
+      "latency_ms": 676.5618634223938,
       "best_choice": {
-        "visual_token_num": 64,
+        "visual_token_num": 128,
         "batch_size": 8,
-        "latency_ms": 663.5838150978088,
-        "latency_stddev_ms": 20.187311850711595,
-        "throughput_qps": 12.055749127667982,
-        "accuracy": 0.65
+        "latency_ms": 560.4978322982788,
+        "latency_stddev_ms": 10.078373632455833,
+        "throughput_qps": 14.273025762109743,
+        "accuracy": 0.655
       }
     },
     "57": {
-      "latency_ms": 710.2323937416077,
+      "latency_ms": 686.5618634223938,
       "best_choice": {
-        "visual_token_num": 64,
+        "visual_token_num": 128,
         "batch_size": 8,
-        "latency_ms": 663.5838150978088,
-        "latency_stddev_ms": 20.187311850711595,
-        "throughput_qps": 12.055749127667982,
-        "accuracy": 0.65
+        "latency_ms": 560.4978322982788,
+        "latency_stddev_ms": 10.078373632455833,
+        "throughput_qps": 14.273025762109743,
+        "accuracy": 0.655
       }
     },
     "58": {
-      "latency_ms": 720.2323937416077,
+      "latency_ms": 696.5618634223938,
       "best_choice": {
-        "visual_token_num": 64,
+        "visual_token_num": 256,
         "batch_size": 8,
-        "latency_ms": 663.5838150978088,
-        "latency_stddev_ms": 20.187311850711595,
-        "throughput_qps": 12.055749127667982,
-        "accuracy": 0.65
+        "latency_ms": 687.8497123718262,
+        "latency_stddev_ms": 17.01383115325717,
+        "throughput_qps": 11.63044754705879,
+        "accuracy": 0.655
       }
     },
     "59": {
-      "latency_ms": 730.2323937416077,
+      "latency_ms": 706.5618634223938,
       "best_choice": {
-        "visual_token_num": 64,
+        "visual_token_num": 256,
         "batch_size": 8,
-        "latency_ms": 663.5838150978088,
-        "latency_stddev_ms": 20.187311850711595,
-        "throughput_qps": 12.055749127667982,
-        "accuracy": 0.65
+        "latency_ms": 687.8497123718262,
+        "latency_stddev_ms": 17.01383115325717,
+        "throughput_qps": 11.63044754705879,
+        "accuracy": 0.655
       }
     },
     "60": {
-      "latency_ms": 740.2323937416077,
+      "latency_ms": 716.5618634223938,
       "best_choice": {
-        "visual_token_num": 64,
+        "visual_token_num": 256,
         "batch_size": 8,
-        "latency_ms": 663.5838150978088,
-        "latency_stddev_ms": 20.187311850711595,
-        "throughput_qps": 12.055749127667982,
-        "accuracy": 0.65
+        "latency_ms": 687.8497123718262,
+        "latency_stddev_ms": 17.01383115325717,
+        "throughput_qps": 11.63044754705879,
+        "accuracy": 0.655
       }
     },
     "61": {
-      "latency_ms": 750.2323937416077,
+      "latency_ms": 726.5618634223938,
       "best_choice": {
-        "visual_token_num": 64,
+        "visual_token_num": 256,
         "batch_size": 8,
-        "latency_ms": 663.5838150978088,
-        "latency_stddev_ms": 20.187311850711595,
-        "throughput_qps": 12.055749127667982,
-        "accuracy": 0.65
+        "latency_ms": 687.8497123718262,
+        "latency_stddev_ms": 17.01383115325717,
+        "throughput_qps": 11.63044754705879,
+        "accuracy": 0.655
       }
     },
     "62": {
-      "latency_ms": 760.2323937416077,
+      "latency_ms": 736.5618634223938,
       "best_choice": {
-        "visual_token_num": 64,
+        "visual_token_num": 256,
         "batch_size": 8,
-        "latency_ms": 663.5838150978088,
-        "latency_stddev_ms": 20.187311850711595,
-        "throughput_qps": 12.055749127667982,
-        "accuracy": 0.65
+        "latency_ms": 687.8497123718262,
+        "latency_stddev_ms": 17.01383115325717,
+        "throughput_qps": 11.63044754705879,
+        "accuracy": 0.655
       }
     },
     "63": {
-      "latency_ms": 770.2323937416077,
+      "latency_ms": 746.5618634223938,
       "best_choice": {
-        "visual_token_num": 64,
+        "visual_token_num": 256,
         "batch_size": 8,
-        "latency_ms": 663.5838150978088,
-        "latency_stddev_ms": 20.187311850711595,
-        "throughput_qps": 12.055749127667982,
-        "accuracy": 0.65
+        "latency_ms": 687.8497123718262,
+        "latency_stddev_ms": 17.01383115325717,
+        "throughput_qps": 11.63044754705879,
+        "accuracy": 0.655
       }
     },
     "64": {
-      "latency_ms": 780.2323937416077,
+      "latency_ms": 756.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 256,
         "batch_size": 8,
-        "latency_ms": 774.1976976394653,
-        "latency_stddev_ms": 25.464118749063896,
-        "throughput_qps": 10.333277952636724,
-        "accuracy": 0.65
+        "latency_ms": 687.8497123718262,
+        "latency_stddev_ms": 17.01383115325717,
+        "throughput_qps": 11.63044754705879,
+        "accuracy": 0.655
       }
     },
     "65": {
-      "latency_ms": 790.2323937416077,
+      "latency_ms": 766.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 256,
         "batch_size": 8,
-        "latency_ms": 774.1976976394653,
-        "latency_stddev_ms": 25.464118749063896,
-        "throughput_qps": 10.333277952636724,
-        "accuracy": 0.65
+        "latency_ms": 687.8497123718262,
+        "latency_stddev_ms": 17.01383115325717,
+        "throughput_qps": 11.63044754705879,
+        "accuracy": 0.655
       }
     },
     "66": {
-      "latency_ms": 800.2323937416077,
+      "latency_ms": 776.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 256,
         "batch_size": 8,
-        "latency_ms": 774.1976976394653,
-        "latency_stddev_ms": 25.464118749063896,
-        "throughput_qps": 10.333277952636724,
-        "accuracy": 0.65
+        "latency_ms": 687.8497123718262,
+        "latency_stddev_ms": 17.01383115325717,
+        "throughput_qps": 11.63044754705879,
+        "accuracy": 0.655
       }
     },
     "67": {
-      "latency_ms": 810.2323937416077,
+      "latency_ms": 786.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 256,
         "batch_size": 8,
-        "latency_ms": 774.1976976394653,
-        "latency_stddev_ms": 25.464118749063896,
-        "throughput_qps": 10.333277952636724,
-        "accuracy": 0.65
+        "latency_ms": 687.8497123718262,
+        "latency_stddev_ms": 17.01383115325717,
+        "throughput_qps": 11.63044754705879,
+        "accuracy": 0.655
       }
     },
     "68": {
-      "latency_ms": 820.2323937416077,
+      "latency_ms": 796.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 256,
         "batch_size": 8,
-        "latency_ms": 774.1976976394653,
-        "latency_stddev_ms": 25.464118749063896,
-        "throughput_qps": 10.333277952636724,
-        "accuracy": 0.65
+        "latency_ms": 687.8497123718262,
+        "latency_stddev_ms": 17.01383115325717,
+        "throughput_qps": 11.63044754705879,
+        "accuracy": 0.655
       }
     },
     "69": {
-      "latency_ms": 830.2323937416077,
+      "latency_ms": 806.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 256,
         "batch_size": 8,
-        "latency_ms": 774.1976976394653,
-        "latency_stddev_ms": 25.464118749063896,
-        "throughput_qps": 10.333277952636724,
-        "accuracy": 0.65
+        "latency_ms": 687.8497123718262,
+        "latency_stddev_ms": 17.01383115325717,
+        "throughput_qps": 11.63044754705879,
+        "accuracy": 0.655
       }
     },
     "70": {
-      "latency_ms": 840.2323937416077,
+      "latency_ms": 816.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 256,
         "batch_size": 8,
-        "latency_ms": 774.1976976394653,
-        "latency_stddev_ms": 25.464118749063896,
-        "throughput_qps": 10.333277952636724,
-        "accuracy": 0.65
+        "latency_ms": 687.8497123718262,
+        "latency_stddev_ms": 17.01383115325717,
+        "throughput_qps": 11.63044754705879,
+        "accuracy": 0.655
       }
     },
     "71": {
-      "latency_ms": 850.2323937416077,
+      "latency_ms": 826.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 256,
         "batch_size": 8,
-        "latency_ms": 774.1976976394653,
-        "latency_stddev_ms": 25.464118749063896,
-        "throughput_qps": 10.333277952636724,
-        "accuracy": 0.65
+        "latency_ms": 687.8497123718262,
+        "latency_stddev_ms": 17.01383115325717,
+        "throughput_qps": 11.63044754705879,
+        "accuracy": 0.655
       }
     },
     "72": {
-      "latency_ms": 860.2323937416077,
+      "latency_ms": 836.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 384,
         "batch_size": 8,
-        "latency_ms": 774.1976976394653,
-        "latency_stddev_ms": 25.464118749063896,
-        "throughput_qps": 10.333277952636724,
-        "accuracy": 0.65
+        "latency_ms": 832.2407722473145,
+        "latency_stddev_ms": 9.553719011409585,
+        "throughput_qps": 9.612602826940885,
+        "accuracy": 0.67
       }
     },
     "73": {
-      "latency_ms": 870.2323937416077,
+      "latency_ms": 846.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 384,
         "batch_size": 8,
-        "latency_ms": 774.1976976394653,
-        "latency_stddev_ms": 25.464118749063896,
-        "throughput_qps": 10.333277952636724,
-        "accuracy": 0.65
+        "latency_ms": 832.2407722473145,
+        "latency_stddev_ms": 9.553719011409585,
+        "throughput_qps": 9.612602826940885,
+        "accuracy": 0.67
       }
     },
     "74": {
-      "latency_ms": 880.2323937416077,
+      "latency_ms": 856.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 384,
         "batch_size": 8,
-        "latency_ms": 774.1976976394653,
-        "latency_stddev_ms": 25.464118749063896,
-        "throughput_qps": 10.333277952636724,
-        "accuracy": 0.65
+        "latency_ms": 832.2407722473145,
+        "latency_stddev_ms": 9.553719011409585,
+        "throughput_qps": 9.612602826940885,
+        "accuracy": 0.67
       }
     },
     "75": {
-      "latency_ms": 890.2323937416077,
+      "latency_ms": 866.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 384,
         "batch_size": 8,
-        "latency_ms": 774.1976976394653,
-        "latency_stddev_ms": 25.464118749063896,
-        "throughput_qps": 10.333277952636724,
-        "accuracy": 0.65
+        "latency_ms": 832.2407722473145,
+        "latency_stddev_ms": 9.553719011409585,
+        "throughput_qps": 9.612602826940885,
+        "accuracy": 0.67
       }
     },
     "76": {
-      "latency_ms": 900.2323937416077,
+      "latency_ms": 876.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 384,
         "batch_size": 8,
-        "latency_ms": 774.1976976394653,
-        "latency_stddev_ms": 25.464118749063896,
-        "throughput_qps": 10.333277952636724,
-        "accuracy": 0.65
+        "latency_ms": 832.2407722473145,
+        "latency_stddev_ms": 9.553719011409585,
+        "throughput_qps": 9.612602826940885,
+        "accuracy": 0.67
       }
     },
     "77": {
-      "latency_ms": 910.2323937416077,
+      "latency_ms": 886.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 384,
         "batch_size": 8,
-        "latency_ms": 774.1976976394653,
-        "latency_stddev_ms": 25.464118749063896,
-        "throughput_qps": 10.333277952636724,
-        "accuracy": 0.65
+        "latency_ms": 832.2407722473145,
+        "latency_stddev_ms": 9.553719011409585,
+        "throughput_qps": 9.612602826940885,
+        "accuracy": 0.67
       }
     },
     "78": {
-      "latency_ms": 920.2323937416077,
+      "latency_ms": 896.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 384,
         "batch_size": 8,
-        "latency_ms": 774.1976976394653,
-        "latency_stddev_ms": 25.464118749063896,
-        "throughput_qps": 10.333277952636724,
-        "accuracy": 0.65
+        "latency_ms": 832.2407722473145,
+        "latency_stddev_ms": 9.553719011409585,
+        "throughput_qps": 9.612602826940885,
+        "accuracy": 0.67
       }
     },
     "79": {
-      "latency_ms": 930.2323937416077,
+      "latency_ms": 906.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 384,
         "batch_size": 8,
-        "latency_ms": 774.1976976394653,
-        "latency_stddev_ms": 25.464118749063896,
-        "throughput_qps": 10.333277952636724,
-        "accuracy": 0.65
+        "latency_ms": 832.2407722473145,
+        "latency_stddev_ms": 9.553719011409585,
+        "throughput_qps": 9.612602826940885,
+        "accuracy": 0.67
       }
     },
     "80": {
-      "latency_ms": 940.2323937416077,
+      "latency_ms": 916.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 384,
         "batch_size": 8,
-        "latency_ms": 774.1976976394653,
-        "latency_stddev_ms": 25.464118749063896,
-        "throughput_qps": 10.333277952636724,
-        "accuracy": 0.65
+        "latency_ms": 832.2407722473145,
+        "latency_stddev_ms": 9.553719011409585,
+        "throughput_qps": 9.612602826940885,
+        "accuracy": 0.67
       }
     },
     "81": {
-      "latency_ms": 950.2323937416077,
+      "latency_ms": 926.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 384,
         "batch_size": 8,
-        "latency_ms": 774.1976976394653,
-        "latency_stddev_ms": 25.464118749063896,
-        "throughput_qps": 10.333277952636724,
-        "accuracy": 0.65
+        "latency_ms": 832.2407722473145,
+        "latency_stddev_ms": 9.553719011409585,
+        "throughput_qps": 9.612602826940885,
+        "accuracy": 0.67
       }
     },
     "82": {
-      "latency_ms": 960.2323937416077,
+      "latency_ms": 936.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 384,
         "batch_size": 8,
-        "latency_ms": 774.1976976394653,
-        "latency_stddev_ms": 25.464118749063896,
-        "throughput_qps": 10.333277952636724,
-        "accuracy": 0.65
+        "latency_ms": 832.2407722473145,
+        "latency_stddev_ms": 9.553719011409585,
+        "throughput_qps": 9.612602826940885,
+        "accuracy": 0.67
       }
     },
     "83": {
-      "latency_ms": 970.2323937416077,
+      "latency_ms": 946.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 384,
         "batch_size": 8,
-        "latency_ms": 774.1976976394653,
-        "latency_stddev_ms": 25.464118749063896,
-        "throughput_qps": 10.333277952636724,
-        "accuracy": 0.65
+        "latency_ms": 832.2407722473145,
+        "latency_stddev_ms": 9.553719011409585,
+        "throughput_qps": 9.612602826940885,
+        "accuracy": 0.67
       }
     },
     "84": {
-      "latency_ms": 980.2323937416077,
+      "latency_ms": 956.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 384,
         "batch_size": 8,
-        "latency_ms": 774.1976976394653,
-        "latency_stddev_ms": 25.464118749063896,
-        "throughput_qps": 10.333277952636724,
-        "accuracy": 0.65
+        "latency_ms": 832.2407722473145,
+        "latency_stddev_ms": 9.553719011409585,
+        "throughput_qps": 9.612602826940885,
+        "accuracy": 0.67
       }
     },
     "85": {
-      "latency_ms": 990.2323937416077,
+      "latency_ms": 966.5618634223938,
       "best_choice": {
-        "visual_token_num": 128,
+        "visual_token_num": 384,
         "batch_size": 8,
-        "latency_ms": 774.1976976394653,
-        "latency_stddev_ms": 25.464118749063896,
-        "throughput_qps": 10.333277952636724,
-        "accuracy": 0.65
+        "latency_ms": 832.2407722473145,
+        "latency_stddev_ms": 9.553719011409585,
+        "throughput_qps": 9.612602826940885,
+        "accuracy": 0.67
       }
     },
     "86": {
-      "latency_ms": 1000.2323937416077,
+      "latency_ms": 976.5618634223938,
       "best_choice": {
-        "visual_token_num": 256,
+        "visual_token_num": 384,
         "batch_size": 8,
-        "latency_ms": 990.7959938049316,
-        "latency_stddev_ms": 25.735283697944993,
-        "throughput_qps": 8.074316054991078,
-        "accuracy": 0.65
+        "latency_ms": 832.2407722473145,
+        "latency_stddev_ms": 9.553719011409585,
+        "throughput_qps": 9.612602826940885,
+        "accuracy": 0.67
       }
     },
     "87": {
-      "latency_ms": 1010.2323937416077,
+      "latency_ms": 986.5618634223938,
       "best_choice": {
-        "visual_token_num": 256,
+        "visual_token_num": 384,
         "batch_size": 8,
-        "latency_ms": 990.7959938049316,
-        "latency_stddev_ms": 25.735283697944993,
-        "throughput_qps": 8.074316054991078,
-        "accuracy": 0.65
+        "latency_ms": 832.2407722473145,
+        "latency_stddev_ms": 9.553719011409585,
+        "throughput_qps": 9.612602826940885,
+        "accuracy": 0.67
       }
     },
     "88": {
-      "latency_ms": 1020.2323937416077,
+      "latency_ms": 996.5618634223938,
       "best_choice": {
-        "visual_token_num": 256,
+        "visual_token_num": 384,
         "batch_size": 8,
-        "latency_ms": 990.7959938049316,
-        "latency_stddev_ms": 25.735283697944993,
-        "throughput_qps": 8.074316054991078,
-        "accuracy": 0.65
+        "latency_ms": 832.2407722473145,
+        "latency_stddev_ms": 9.553719011409585,
+        "throughput_qps": 9.612602826940885,
+        "accuracy": 0.67
       }
     },
     "89": {
-      "latency_ms": 1030.2323937416077,
+      "latency_ms": 1006.5618634223938,
       "best_choice": {
-        "visual_token_num": 256,
+        "visual_token_num": 384,
         "batch_size": 8,
-        "latency_ms": 990.7959938049316,
-        "latency_stddev_ms": 25.735283697944993,
-        "throughput_qps": 8.074316054991078,
-        "accuracy": 0.65
+        "latency_ms": 832.2407722473145,
+        "latency_stddev_ms": 9.553719011409585,
+        "throughput_qps": 9.612602826940885,
+        "accuracy": 0.67
       }
     },
     "90": {
-      "latency_ms": 1040.2323937416077,
+      "latency_ms": 1016.5618634223938,
       "best_choice": {
-        "visual_token_num": 256,
+        "visual_token_num": 384,
         "batch_size": 8,
-        "latency_ms": 990.7959938049316,
-        "latency_stddev_ms": 25.735283697944993,
-        "throughput_qps": 8.074316054991078,
-        "accuracy": 0.65
+        "latency_ms": 832.2407722473145,
+        "latency_stddev_ms": 9.553719011409585,
+        "throughput_qps": 9.612602826940885,
+        "accuracy": 0.67
       }
     },
     "91": {
-      "latency_ms": 1050.2323937416077,
-      "best_choice": {
-        "visual_token_num": 256,
-        "batch_size": 8,
-        "latency_ms": 990.7959938049316,
-        "latency_stddev_ms": 25.735283697944993,
-        "throughput_qps": 8.074316054991078,
-        "accuracy": 0.65
-      }
-    },
-    "92": {
-      "latency_ms": 1060.2323937416077,
-      "best_choice": {
-        "visual_token_num": 256,
-        "batch_size": 8,
-        "latency_ms": 990.7959938049316,
-        "latency_stddev_ms": 25.735283697944993,
-        "throughput_qps": 8.074316054991078,
-        "accuracy": 0.65
-      }
-    },
-    "93": {
-      "latency_ms": 1070.2323937416077,
-      "best_choice": {
-        "visual_token_num": 256,
-        "batch_size": 8,
-        "latency_ms": 990.7959938049316,
-        "latency_stddev_ms": 25.735283697944993,
-        "throughput_qps": 8.074316054991078,
-        "accuracy": 0.65
-      }
-    },
-    "94": {
-      "latency_ms": 1080.2323937416077,
-      "best_choice": {
-        "visual_token_num": 256,
-        "batch_size": 8,
-        "latency_ms": 990.7959938049316,
-        "latency_stddev_ms": 25.735283697944993,
-        "throughput_qps": 8.074316054991078,
-        "accuracy": 0.65
-      }
-    },
-    "95": {
-      "latency_ms": 1090.2323937416077,
-      "best_choice": {
-        "visual_token_num": 256,
-        "batch_size": 8,
-        "latency_ms": 990.7959938049316,
-        "latency_stddev_ms": 25.735283697944993,
-        "throughput_qps": 8.074316054991078,
-        "accuracy": 0.65
-      }
-    },
-    "96": {
-      "latency_ms": 1100.2323937416077,
-      "best_choice": {
-        "visual_token_num": 256,
-        "batch_size": 8,
-        "latency_ms": 990.7959938049316,
-        "latency_stddev_ms": 25.735283697944993,
-        "throughput_qps": 8.074316054991078,
-        "accuracy": 0.65
-      }
-    },
-    "97": {
-      "latency_ms": 1110.2323937416077,
-      "best_choice": {
-        "visual_token_num": 256,
-        "batch_size": 8,
-        "latency_ms": 990.7959938049316,
-        "latency_stddev_ms": 25.735283697944993,
-        "throughput_qps": 8.074316054991078,
-        "accuracy": 0.65
-      }
-    },
-    "98": {
-      "latency_ms": 1120.2323937416077,
-      "best_choice": {
-        "visual_token_num": 256,
-        "batch_size": 8,
-        "latency_ms": 990.7959938049316,
-        "latency_stddev_ms": 25.735283697944993,
-        "throughput_qps": 8.074316054991078,
-        "accuracy": 0.65
-      }
-    },
-    "99": {
-      "latency_ms": 1130.2323937416077,
-      "best_choice": {
-        "visual_token_num": 256,
-        "batch_size": 8,
-        "latency_ms": 990.7959938049316,
-        "latency_stddev_ms": 25.735283697944993,
-        "throughput_qps": 8.074316054991078,
-        "accuracy": 0.65
-      }
-    },
-    "100": {
-      "latency_ms": 1140.2323937416077,
-      "best_choice": {
-        "visual_token_num": 256,
-        "batch_size": 8,
-        "latency_ms": 990.7959938049316,
-        "latency_stddev_ms": 25.735283697944993,
-        "throughput_qps": 8.074316054991078,
-        "accuracy": 0.65
-      }
-    },
-    "101": {
-      "latency_ms": 1150.2323937416077,
-      "best_choice": {
-        "visual_token_num": 256,
-        "batch_size": 8,
-        "latency_ms": 990.7959938049316,
-        "latency_stddev_ms": 25.735283697944993,
-        "throughput_qps": 8.074316054991078,
-        "accuracy": 0.65
-      }
-    },
-    "102": {
-      "latency_ms": 1160.2323937416077,
-      "best_choice": {
-        "visual_token_num": 256,
-        "batch_size": 8,
-        "latency_ms": 990.7959938049316,
-        "latency_stddev_ms": 25.735283697944993,
-        "throughput_qps": 8.074316054991078,
-        "accuracy": 0.65
-      }
-    },
-    "103": {
-      "latency_ms": 1170.2323937416077,
-      "best_choice": {
-        "visual_token_num": 256,
-        "batch_size": 8,
-        "latency_ms": 990.7959938049316,
-        "latency_stddev_ms": 25.735283697944993,
-        "throughput_qps": 8.074316054991078,
-        "accuracy": 0.65
-      }
-    },
-    "104": {
-      "latency_ms": 1180.2323937416077,
-      "best_choice": {
-        "visual_token_num": 256,
-        "batch_size": 8,
-        "latency_ms": 990.7959938049316,
-        "latency_stddev_ms": 25.735283697944993,
-        "throughput_qps": 8.074316054991078,
-        "accuracy": 0.65
-      }
-    },
-    "105": {
-      "latency_ms": 1190.2323937416077,
-      "best_choice": {
-        "visual_token_num": 256,
-        "batch_size": 8,
-        "latency_ms": 990.7959938049316,
-        "latency_stddev_ms": 25.735283697944993,
-        "throughput_qps": 8.074316054991078,
-        "accuracy": 0.65
-      }
-    },
-    "106": {
-      "latency_ms": 1200.2323937416077,
-      "best_choice": {
-        "visual_token_num": 256,
-        "batch_size": 8,
-        "latency_ms": 990.7959938049316,
-        "latency_stddev_ms": 25.735283697944993,
-        "throughput_qps": 8.074316054991078,
-        "accuracy": 0.65
-      }
-    },
-    "107": {
-      "latency_ms": 1210.2323937416077,
-      "best_choice": {
-        "visual_token_num": 256,
-        "batch_size": 8,
-        "latency_ms": 990.7959938049316,
-        "latency_stddev_ms": 25.735283697944993,
-        "throughput_qps": 8.074316054991078,
-        "accuracy": 0.65
-      }
-    },
-    "108": {
-      "latency_ms": 1220.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "109": {
-      "latency_ms": 1230.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "110": {
-      "latency_ms": 1240.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "111": {
-      "latency_ms": 1250.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "112": {
-      "latency_ms": 1260.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "113": {
-      "latency_ms": 1270.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "114": {
-      "latency_ms": 1280.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "115": {
-      "latency_ms": 1290.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "116": {
-      "latency_ms": 1300.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "117": {
-      "latency_ms": 1310.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "118": {
-      "latency_ms": 1320.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "119": {
-      "latency_ms": 1330.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "120": {
-      "latency_ms": 1340.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "121": {
-      "latency_ms": 1350.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "122": {
-      "latency_ms": 1360.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "123": {
-      "latency_ms": 1370.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "124": {
-      "latency_ms": 1380.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "125": {
-      "latency_ms": 1390.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "126": {
-      "latency_ms": 1400.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "127": {
-      "latency_ms": 1410.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "128": {
-      "latency_ms": 1420.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "129": {
-      "latency_ms": 1430.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "130": {
-      "latency_ms": 1440.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "131": {
-      "latency_ms": 1450.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "132": {
-      "latency_ms": 1460.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "133": {
-      "latency_ms": 1470.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "134": {
-      "latency_ms": 1480.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "135": {
-      "latency_ms": 1490.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "136": {
-      "latency_ms": 1500.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "137": {
-      "latency_ms": 1510.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "138": {
-      "latency_ms": 1520.2323937416077,
-      "best_choice": {
-        "visual_token_num": 384,
-        "batch_size": 8,
-        "latency_ms": 1218.8331961631775,
-        "latency_stddev_ms": 17.43721735453065,
-        "throughput_qps": 6.563654505951739,
-        "accuracy": 0.67
-      }
-    },
-    "139": {
-      "latency_ms": 1530.2323937416077,
+      "latency_ms": 1026.5618634223938,
       "best_choice": {
         "visual_token_num": 576,
         "batch_size": 8,
-        "latency_ms": 1523.397135734558,
-        "latency_stddev_ms": 15.96868045716896,
-        "throughput_qps": 5.251421190405827,
+        "latency_ms": 1020.069682598114,
+        "latency_stddev_ms": 13.383196660330245,
+        "throughput_qps": 7.842601477601047,
         "accuracy": 0.675
       }
     }
@@ -1723,5 +1195,8 @@
     4,
     8
   ],
-  "latency_bucket_width_ms": 10.0
+  "latency_bucket_width_ms": 10.0,
+  "w_v": 0.661352146371693,
+  "w_b": 74.95051641049598,
+  "c": -65.74499520811696
 }
