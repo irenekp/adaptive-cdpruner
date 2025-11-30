@@ -317,6 +317,12 @@ async def controller_loop():
                     GenerateResponse(id=item.id, output=out_text, vtn=vtn)
                 )
 
+def load_scheduler_profile(path: str):
+    import json
+    with open(path, 'r', encoding='utf-8') as f:
+        profile = json.load(f)
+    return profile
+
 @app.on_event("startup")
 async def startup_event():
     # Load CDPruner + LLaVA model once
@@ -350,20 +356,29 @@ async def startup_event():
     batch_sizes = [1, 2, 4, 8]
     if FIXED_VTN is None or FIXED_BATCH is None:
         print(f"[Profiler] Running offline profile from trace: {trace_path}")
-        SCHEDULER_PROFILE = run_profiler(
-            model=model,
-            tokenizer=tokenizer,
-            image_processor=image_processor,
-            device=device,
-            conv_mode=conv_mode,
-            trace_path=trace_path,
-            visual_token_nums=visual_token_nums,
-            batch_sizes=batch_sizes,
-            max_accuracy_samples=200,
-            max_latency_batches=20,
-            latency_bucket_width_ms=10.0,
-            warmup_iterations=3,
-        )
+        # if file "/home/hice1/istephen3/CDPruner/profiler_plots/profiler_profile.json" exists
+        # SCHEDULER_PROFILE = load_scheduler_profile("/home/hice1/istephen3/CDPruner/profiler_plots/profiler_profile.json")
+        # else run profiler
+        if os.path.exists("/home/hice1/istephen3/CDPruner/profiler_plots/profiler_profile.json"):
+            SCHEDULER_PROFILE = load_scheduler_profile("/home/hice1/istephen3/CDPruner/profiler_plots/profiler_profile.json")
+            print(f"[Profiler] Loaded existing profile with {len(SCHEDULER_PROFILE['profile_rows'])} rows, "
+                f"{len(SCHEDULER_PROFILE['buckets'])} buckets.")
+            print(SCHEDULER_PROFILE)
+        else:
+            SCHEDULER_PROFILE = run_profiler(
+                model=model,
+                tokenizer=tokenizer,
+                image_processor=image_processor,
+                device=device,
+                conv_mode=conv_mode,
+                trace_path=trace_path,
+                visual_token_nums=visual_token_nums,
+                batch_sizes=batch_sizes,
+                max_accuracy_samples=200,
+                max_latency_batches=20,
+                latency_bucket_width_ms=10.0,
+                warmup_iterations=3,
+            )
         print(f"[Profiler] Done. {len(SCHEDULER_PROFILE['profile_rows'])} rows, "
             f"{len(SCHEDULER_PROFILE['buckets'])} buckets.")
         print(SCHEDULER_PROFILE)
@@ -399,13 +414,19 @@ class FixedBatchRequest(BaseModel):
 @app.post("/set_fixed_vtn")
 async def set_fixed_vtn_endpoint(req: FixedVtnRequest):
     global FIXED_VTN
-    FIXED_VTN = str(req.vtn)
+    if req.vtn == -1:
+        FIXED_VTN = None
+    else:
+        FIXED_VTN = str(req.vtn)
     return {"status": "success", "fixed_vtn": FIXED_VTN}
 
 @app.post("/set_fixed_batch")
 async def set_fixed_batch_endpoint(req: FixedBatchRequest):
     global FIXED_BATCH
-    FIXED_BATCH = str(req.batch)
+    if req.batch == -1:
+        FIXED_BATCH = None
+    else:
+        FIXED_BATCH = str(req.batch)
     return {"status": "success", "fixed_batch": FIXED_BATCH}
 
 if __name__ == "__main__":

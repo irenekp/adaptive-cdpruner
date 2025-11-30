@@ -149,15 +149,45 @@ def main():
             with open(metrics_out, "w") as f:
                 for rec in metrics:
                     f.write(json.dumps(rec) + "\n")
+            # median ttft
+            latencies = [m["latency_ms"] for m in metrics]
+            median_latency = sorted(latencies)[len(latencies) // 2]
+            print(f"Median latency (ms): {median_latency:.2f}")
+            # SLO attainment
             slo_attainment = sum(1 for m in metrics if m["latency_ms"] <= m["deadline_ms"]) / len(metrics)
             print(f"SLO attainment = {slo_attainment:.3f}")
             all_runs.append({
                 "vtn": vtn,
                 "batch": batch,
-                "metrics": metrics,
+                "median_latency": median_latency,
                 "slo": slo_attainment,
             })
-
+    # run adaptive algorithm
+    set_fixed_vtn(server_url, -1)  # -1 indicates adaptive VTN
+    set_fixed_batch(server_url, -1)  # -1 indicates adaptive BATCH
+    time.sleep(0.5)
+    print("=" * 80)
+    print(f"Config: ADAPTIVE VTN and BATCH")
+    print("=" * 80)
+    metrics = run_client_internal(
+        trace_path=trace_path,
+        server_url=server_url,
+        max_reqs=args.max_reqs,
+    )
+    # median ttft
+    latencies = [m["latency_ms"] for m in metrics]
+    median_latency = sorted(latencies)[len(latencies) // 2]
+    print(f"Median latency (ms): {median_latency:.2f}") 
+    # SLO attainment 
+    slo_attainment = sum(1 for m in metrics if m["latency_ms"] <= m["deadline_ms"]) / len(metrics)
+    print(f"SLO attainment = {slo_attainment:.3f}")
+    all_runs.append({
+        "vtn": "adaptive",
+        "batch": "adaptive",
+        "median_latency": median_latency,
+        "slo": slo_attainment,
+    })
+    # write summary
     summary_path = results_dir / "summary.json"
     with open(summary_path, "w") as f:
         json.dump(all_runs, f, indent=2)
