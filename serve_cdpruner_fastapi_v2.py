@@ -10,7 +10,7 @@ import torch
 from fastapi import FastAPI
 from pydantic import BaseModel
 import os
-from llava.serve.profiler import run_profiler, set_visual_tokens
+from llava.serve.profiler import run_profiler, set_visual_tokens, get_linear_regression_model_coefficients
 SCHEDULER_PROFILE = None  # filled at startup
 FIXED_VTN = os.getenv("CDPRUNER_FIXED_VTN")   # e.g. "576" or None
 FIXED_BATCH = os.getenv("CDPRUNER_FIXED_BATCH")  # e.g. "4" or None
@@ -131,24 +131,26 @@ def decide_control(metrics: QueueMetrics):
 
     if slack_ms <= 0:
         print("SLO already violated, picking fastest bucket")
-        return MIN_VTN, MAX_BATCH_SIZE
-    
-    slack_ms = slack_ms * 0.90    # 10% margin
-    
-    # --- 1. Maximize batch size ---
-    # t = w_v * v + w_b * b + c
-    # We use v = MIN_VTN when solving for max b
-    numerator = slack_ms - c - w_v * MIN_VTN
-    if numerator <= 0:
-        return MIN_VTN, MIN_BATCH_SIZE
+        v = MIN_VTN 
+        b = min(MAX_BATCH_SIZE, metrics.queue_length)
+    else:
+        slack_ms = slack_ms * 0.90    # 10% margin
+        
+        # --- 1. Maximize batch size ---
+        # t = w_v * v + w_b * b + c
+        # We use v = MIN_VTN when solving for max b
+        numerator = slack_ms - c - w_v * MIN_VTN
+        if numerator <= 0:
+            return MIN_VTN, MIN_BATCH_SIZE
 
-    b_cont = numerator / w_b
-    b = int(min(b_cont, MAX_BATCH_SIZE))
-    b = max(b, MIN_BATCH_SIZE)
+        b_cont = numerator / w_b
+        b = int(min(b_cont, MAX_BATCH_SIZE))
+        b = max(b, MIN_BATCH_SIZE)
+        b = min(b, metrics.queue_length)
 
-    # --- 2. Maximize VTN for that batch ---
-    v_cont = (slack_ms - c - w_b * b) / w_v
-    v = max(int(v_cont), MIN_VTN)
+        # --- 2. Maximize VTN for that batch ---
+        v_cont = (slack_ms - c - w_b * b) / w_v
+        v = max(int(v_cont), MIN_VTN)
 
     return v, b
 
@@ -348,11 +350,16 @@ async def startup_event():
                 # if file "/home/hice1/istephen3/CDPruner/profiler_plots/profiler_profile.json" exists
         # SCHEDULER_PROFILE = load_scheduler_profile("/home/hice1/istephen3/CDPruner/profiler_plots/profiler_profile.json")
         # else run profiler
-        if os.path.exists("/home/hice1/istephen3/CDPruner/profiler_plots/profiler_profile.json"):
-            SCHEDULER_PROFILE = load_scheduler_profile("/home/hice1/istephen3/CDPruner/profiler_plots/profiler_profile.json")
-            print(f"[Profiler] Loaded existing profile with {len(SCHEDULER_PROFILE['profile_rows'])} rows, "
-                f"{len(SCHEDULER_PROFILE['buckets'])} buckets.")
-            print(SCHEDULER_PROFILE)
+        if os.path.exists("/home/hice1/nmeda6/adaptive-cdpruner/profiler_plots/profiler_profile.json"):
+            SCHEDULER_PROFILE = load_scheduler_profile("/home/hice1/nmeda6/adaptive-cdpruner/profiler_plots/profiler_profile.json")
+            print(f"[Profiler] Loaded existing profile with {len(SCHEDULER_PROFILE['profile_rows'])} rows")
+            if not SCHEDULER_PROFILE.get("w_v") or not SCHEDULER_PROFILE.get("w_b") or not SCHEDULER_PROFILE.get("c"):
+                print(f"[Profiler] Existing profile missing regression coefficients, recomputing...")
+                w_v, w_b, c = get_linear_regression_model_coefficients(SCHEDULER_PROFILE["profile_rows"])
+                SCHEDULER_PROFILE["w_v"] = w_v
+                SCHEDULER_PROFILE["w_b"] = w_b
+                SCHEDULER_PROFILE["c"] = c
+                print(f"[Profiler] Computed coefficients: w_v={w_v}, w_b={w_b}, c={c}")
         else:
             SCHEDULER_PROFILE = run_profiler(
                 model=model,
