@@ -63,6 +63,9 @@ async def send_request(session: aiohttp.ClientSession, base_url: str, idx: int, 
             slo_violated_count += 1
         slo_miss = True
     # record metrics for offline analysis
+    pred = data.get("output", "").strip().lower()
+    gold = ev.get("gt_answer", "").strip().lower()
+    accuracy = 1.0 if gold in pred else 0.0
     record = {
         "idx": idx,
         "arrival_time": ev.get("arrival_time"),
@@ -70,6 +73,7 @@ async def send_request(session: aiohttp.ClientSession, base_url: str, idx: int, 
         "deadline_ms": deadline,
         "slo_miss": slo_miss,
         "vtn": vtn,
+        "accuracy": accuracy,
     }
     async with metrics_lock:
         METRICS.append(record)

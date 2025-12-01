@@ -182,13 +182,16 @@ def main():
     slo_attainment = sum(1 for m in metrics if m["latency_ms"] <= m["deadline_ms"]) / len(metrics)
     print(f"SLO attainment = {slo_attainment:.3f}")
     vtns = [m["vtn"] for m in metrics if "vtn" in m]
+    accs = [m["accuracy"] for m in metrics if "accuracy" in m]
     avg_vtn = sum(vtns) / len(vtns) if vtns else -1
+    avg_acc = sum(accs) / len(accs) if accs else -1
     all_runs.append({
         "vtn": "adaptive",
         "batch": "adaptive",
         "median_latency": median_latency,
         "slo": slo_attainment,
         "avg_vtn": avg_vtn,
+        "avg_accuracy": avg_acc,
     })
     # write summary
     summary_path = results_dir / "summary.json"
