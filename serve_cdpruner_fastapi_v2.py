@@ -74,6 +74,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 MAX_BATCH_SIZE = 8
 MIN_BATCH_SIZE = 1
 MIN_VTN = 32
+MAX_VTN = 576
 
 def compute_queue_metrics(queue: Deque[QueueItem]) -> QueueMetrics:
     now = time.time()
@@ -151,6 +152,7 @@ def decide_control(metrics: QueueMetrics):
         # --- 2. Maximize VTN for that batch ---
         v_cont = (slack_ms - c - w_b * b) / w_v
         v = max(int(v_cont), MIN_VTN)
+        v = min(v, MAX_VTN)
 
     return v, b
 
